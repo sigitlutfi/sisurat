@@ -122,35 +122,25 @@ export default function Homex({route, navigation}) {
             bg={'purple.500'}
             borderRadius={'2xl'}
             mt={4}
-            py={6}
+            py={4}
             alignItems={'center'}>
-            <Icon
-              as={MaterialCommunityIcons}
-              name="file-plus"
-              color="white"
-              size={24}
-            />
+            <Image size={64} source={require('../../assets/entr.png')} />
 
-            <Text bold color="white" fontSize={20} mt={6}>
+            <Text bold color="white" fontSize={28}>
               TAMBAH BERKAS
             </Text>
           </Pressable>
 
           <Pressable
-            onPress={() => navigation.navigate('Presensikeluar')}
-            bg={'green.500'}
+            onPress={() => navigation.navigate('Daftarberkas')}
+            bg={'blue.500'}
             borderRadius={'2xl'}
             mt={4}
-            py={8}
+            py={4}
             alignItems={'center'}>
-            <Icon
-              as={MaterialCommunityIcons}
-              name="file-document-multiple"
-              color="white"
-              size={24}
-            />
+            <Image size={64} source={require('../../assets/list.png')} />
 
-            <Text bold color="white" fontSize={20} mt={6}>
+            <Text bold color="white" fontSize={28}>
               DAFTAR BERKAS
             </Text>
           </Pressable>

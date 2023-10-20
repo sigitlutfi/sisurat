@@ -45,6 +45,7 @@ import Presensimasuk from './src/presensi/Presensimasuk';
 import Riwayat from './src/presensi/Riwayat';
 import Presensikeluar from './src/presensi/Presensikeluar';
 import Tambahberkas from './src/berkas/Tambahberkas';
+import Daftarberkas from './src/berkas/Daftarberkas';
 
 const Tab = createBottomTabNavigator();
 
@@ -352,8 +353,8 @@ export default function App({navigation}) {
                 initialParams={{conf: state.conf, user: state.userData}}
               />
               <Stack.Screen
-                name="Presensikeluar"
-                component={Presensikeluar}
+                name="Daftarberkas"
+                component={Daftarberkas}
                 initialParams={{conf: state.conf, user: state.userData}}
               />
               <Stack.Screen
