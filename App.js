@@ -7,7 +7,7 @@ import AuthContext from './AuthContext';
 import Login from './src/auth/Login';
 
 import Profil from './src/Profil/Profil';
-import {Icon, NativeBaseProvider, Spinner} from 'native-base';
+import {Icon, NativeBaseProvider, Spinner, Text, View} from 'native-base';
 
 import Header from './src/common/Header';
 
@@ -41,25 +41,20 @@ import Detaildesa from './src/desa/Detaildesa';
 import Tambahasetdesa from './src/desa/Tambahasetdesa';
 import Asetdesa from './src/desa/Asetdesa';
 import Dokumen from './src/dokumen/Dokumen';
-import Presensimasuk from './src/presensi/Presensimasuk';
+
 import Riwayat from './src/presensi/Riwayat';
-import Presensikeluar from './src/presensi/Presensikeluar';
+
 import Tambahberkas from './src/berkas/Tambahberkas';
 import Daftarberkas from './src/berkas/Daftarberkas';
+import {TouchableOpacity} from 'react-native';
+import Ambilberkas from './src/berkas/Scanberkas';
+import Splash from './src/splash/Splash';
+import Onboarding from './src/splash/Onboarding';
+import {PERMISSIONS, checkMultiple, check} from 'react-native-permissions';
 
 const Tab = createBottomTabNavigator();
 
 const Stack = createNativeStackNavigator();
-
-function Splash(params) {
-  const [conf, setConf] = React.useState(false);
-
-  return (
-    <NativeBaseProvider>
-      <Spinner />
-    </NativeBaseProvider>
-  );
-}
 
 export default function App({navigation}) {
   const [state, dispatch] = React.useReducer(
@@ -94,6 +89,13 @@ export default function App({navigation}) {
             isLoading: false,
           };
 
+        case 'grant_permission':
+          return {
+            ...prevState,
+
+            permission: action.permission,
+          };
+
         case 'GANTI_SKPD':
           return {
             ...prevState,
@@ -106,7 +108,31 @@ export default function App({navigation}) {
       isLoading: true,
       isSignout: false,
       userData: null,
+      permission: false,
       conf: false,
+      perm: [
+        {
+          p: PERMISSIONS.ANDROID.CAMERA,
+          title: 'Izinkan penggunaan kamera',
+          desc: 'Kami memerlukan izin kamera untuk pengenalan wajah',
+          icon: 'camera',
+          grante: false,
+        },
+        {
+          p: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+          title: 'Izinkan penggunaan lokasi',
+          desc: 'Kami memerlukan izin lokasi untuk pengukuran jarak presensi',
+          icon: 'map-marker',
+          grante: false,
+        },
+        {
+          p: PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+          title: 'Izinkan penggunaan media',
+          desc: 'Kami memerlukan izin media untuk pengenalan wajah',
+          icon: 'view-gallery',
+          grante: false,
+        },
+      ],
     },
   );
   const [loadconf, setLoadconf] = React.useState(true);
@@ -150,6 +176,46 @@ export default function App({navigation}) {
   };
 
   React.useEffect(() => {
+    var permf = [];
+    state.perm.map((v, i) => {
+      check(v.p)
+        .then(result => {
+          //const newArray = update(granted, {$push: [result]});
+          // console.log('permit' + result);
+
+          let newState = [...state.perm];
+          newState[i].grante = result;
+          //console.log(newState);
+          //setPermf(newState);
+          var x = newState.filter(function (g) {
+            return g.grante !== 'unavailable';
+          });
+
+          permf = x;
+        })
+        .catch(error => {
+          // …
+          console.log(error);
+        });
+    });
+
+    const aperm = [];
+    permf.map((v, i) => {
+      aperm[i] = v.p;
+    });
+
+    checkMultiple(aperm).then(statuses => {
+      console.log(statuses);
+
+      var isValid = false;
+      const cekvalid = obj => obj.grante === 'granted';
+
+      isValid = state.perm.every(cekvalid);
+      console.log('isvalid' + isValid);
+      if (isValid === true) {
+        dispatch({type: 'grant_permission', permission: true});
+      }
+    });
     const bootstrapAsync = async () => {
       let userData;
       let conf;
@@ -182,12 +248,14 @@ export default function App({navigation}) {
             if (v.data.id !== undefined) {
               dispatch({type: 'RESTORE_TOKEN', user: userData, conf: conf});
             } else {
-              dispatch({type: 'SIGN_OUT', conf: conf});
+              //dispatch({type: 'SIGN_OUT', conf: conf});
+              dispatch({type: 'RESTORE_TOKEN', user: userData, conf: conf});
             }
           })
           .catch(e => {
             console.log(e);
-            dispatch({type: 'SIGN_OUT', conf: conf});
+            //dispatch({type: 'SIGN_OUT', conf: conf});
+            dispatch({type: 'RESTORE_TOKEN', user: userData, conf: conf});
           });
       } else if (loadconf === false) {
         dispatch({type: 'SIGN_OUT', conf: conf});
@@ -220,6 +288,9 @@ export default function App({navigation}) {
 
         dispatch({type: 'SIGN_OUTs'});
       },
+      grante: async data => {
+        dispatch({type: 'grant_permission', permission: true});
+      },
       gantiskpd: async data => {
         dispatch({type: 'GANTI_SKPD', user: data});
       },
@@ -245,6 +316,122 @@ export default function App({navigation}) {
     [],
   );
 
+  function MyTabBar({state, descriptors, navigation}) {
+    return (
+      <View
+        style={{
+          backgroundColor: '#e4e4e7',
+          height: 24 + 52,
+          flexDirection: 'column-reverse',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            height: 52,
+
+            backgroundColor: state.routes[0].params.conf.color,
+            justifyContent: 'space-evenly',
+            alignItems: 'flex-end',
+            paddingBottom: 6,
+          }}>
+          {state.routes.map((route, index) => {
+            console.log(route);
+            const {options} = descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                ? options.title
+                : route.name;
+
+            const isFocused = state.index === index;
+
+            const onPress = () => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                // The `merge: true` option makes sure that the params inside the tab screen are preserved
+                navigation.navigate({name: route.name, merge: true});
+              }
+            };
+
+            const onLongPress = () => {
+              navigation.emit({
+                type: 'tabLongPress',
+                target: route.key,
+              });
+            };
+
+            return (
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityState={isFocused ? {selected: true} : {}}
+                accessibilityLabel={options.tabBarAccessibilityLabel}
+                testID={options.tabBarTestID}
+                onPress={onPress}
+                onLongPress={onLongPress}
+                style={{height: 48, justifyContent: 'flex-end'}}>
+                {isFocused ? (
+                  <View style={{alignItems: 'center'}}>
+                    <View
+                      style={{
+                        width: 48,
+                        height: 48,
+                        backgroundColor: route.params.conf.color,
+
+                        borderRadius: 24,
+                        marginTop: -24,
+                        borderWidth: 4,
+                        borderColor: '#e4e4e7',
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <MaterialCommunityIcons
+                        name={route.params.icon}
+                        size={25}
+                        color={isFocused ? '#ffffff' : '#a3a3a3'}
+                      />
+                    </View>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: 14,
+                      }}>
+                      {label}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={{alignItems: 'center'}}>
+                    <MaterialCommunityIcons
+                      name={route.params.icon}
+                      size={18}
+                      style={{alignSelf: 'center'}}
+                      color={'#ffffff'}
+                    />
+                    <Text
+                      style={{
+                        color: 'white',
+
+                        fontSize: 12,
+                      }}>
+                      {label}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+    );
+  }
+
   function MyTabs() {
     return (
       <NativeBaseProvider>
@@ -257,11 +444,16 @@ export default function App({navigation}) {
             tabBarActiveTintColor: 'white',
             tabBarStyle: {backgroundColor: state.conf.color},
           }}
+          tabBar={props => <MyTabBar {...props} />}
           barStyle={{backgroundColor: state.conf.color}}>
           <Tab.Screen
             name="Home"
             component={Homex}
-            initialParams={{conf: state.conf, user: state.userData}}
+            initialParams={{
+              conf: state.conf,
+              user: state.userData,
+              icon: 'file',
+            }}
             options={{
               title: 'Berkas',
 
@@ -281,13 +473,17 @@ export default function App({navigation}) {
           />
           <Tab.Screen
             name="Ambil Berkas"
-            component={Riwayat}
-            initialParams={{conf: state.conf, user: state.userData}}
+            component={Ambilberkas}
+            initialParams={{
+              conf: state.conf,
+              user: state.userData,
+              icon: 'file-find',
+            }}
             options={{
               tabBarIcon: ({color}) => (
                 <Icon
                   as={MaterialCommunityIcons}
-                  name="file-find"
+                  name="camera-plus"
                   size={25}
                   color={color}
                 />
@@ -297,7 +493,11 @@ export default function App({navigation}) {
           <Tab.Screen
             name="Pengguna"
             component={Profil}
-            initialParams={{conf: state.conf, user: state.userData}}
+            initialParams={{
+              conf: state.conf,
+              user: state.userData,
+              icon: 'account',
+            }}
             options={{
               tabBarActiveTintColor: 'white',
               tabBarIcon: ({color}) => (
@@ -320,7 +520,17 @@ export default function App({navigation}) {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
           {state.isLoading ? (
-            <Stack.Screen name="Splash" component={Splash} />
+            <Stack.Screen
+              name="Splash"
+              component={Splash}
+              initialParams={{conf: state.conf}}
+            />
+          ) : state.permission == false ? (
+            <Stack.Screen
+              name="Onboarding"
+              component={Onboarding}
+              initialParams={{conf: state.conf}}
+            />
           ) : state.userData == null ? (
             <>
               <Stack.Screen

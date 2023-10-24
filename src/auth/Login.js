@@ -32,6 +32,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import {ver} from '../..';
 
 export default function Login({route, navigation}) {
   const [username, setUsername] = React.useState('');
@@ -119,41 +120,38 @@ export default function Login({route, navigation}) {
     await AsyncStorage.setItem(
       'userData',
       JSON.stringify({
-        log: {
-          Status: '200',
-          Massagge: 'Anda Berhasil Login',
-          data: {
-            'id user': 39,
-            'kode urusan': 122,
-            'kode suburusan': 1,
-            'kode organisasi': 1,
-            'kode unit': 0,
-            'kode subunit': 0,
-            'Token-type': 'Bearer Token',
-            token:
-              'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXNldGdpcy1kaXkuc2ltZGEubmV0L2FwaS9sb2dpbiIsImlhdCI6MTY5MDU2NDE1MCwiZXhwIjoxNjkwNTY3NzUwLCJuYmYiOjE2OTA1NjQxNTAsImp0aSI6ImZmOVRVQlI4TTZvTkg5aU8iLCJzdWIiOiIzOSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.znYbNMPvSfb0g_oWd1354eWNwbe3SldKE8NaGuo66To',
-          },
-        },
+        id: 14,
+        name: 'Test User',
+        username: '123456',
+        email: 'tes@gmail.com',
+        email_verified_at: null,
+        created_at: '2023-10-03T06:32:00.000000Z',
+        updated_at: '2023-10-03T06:32:00.000000Z',
+        deleted_at: null,
+        kodeakses: 8,
+        foto: null,
+        kodeskpd: null,
+        waktu_masuk: '08:00',
+        waktu_keluar: '17:00',
+        token: 'xx',
       }),
     );
     signIn({
-      log: {
-        Status: '200',
-        Massagge: 'Anda Berhasil Login',
-        data: {
-          'id user': 39,
-          'kode urusan': 122,
-          'kode suburusan': 1,
-          'kode organisasi': 1,
-          'kode unit': 0,
-          'kode subunit': 0,
-          'Token-type': 'Bearer Token',
-          token:
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXNldGdpcy1kaXkuc2ltZGEubmV0L2FwaS9sb2dpbiIsImlhdCI6MTY5MDU2NDE1MCwiZXhwIjoxNjkwNTY3NzUwLCJuYmYiOjE2OTA1NjQxNTAsImp0aSI6ImZmOVRVQlI4TTZvTkg5aU8iLCJzdWIiOiIzOSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.znYbNMPvSfb0g_oWd1354eWNwbe3SldKE8NaGuo66To',
-        },
-      },
+      id: 14,
+      name: 'Test User',
+      username: '123456',
+      email: 'tes@gmail.com',
+      email_verified_at: null,
+      created_at: '2023-10-03T06:32:00.000000Z',
+      updated_at: '2023-10-03T06:32:00.000000Z',
+      deleted_at: null,
+      kodeakses: 8,
+      foto: null,
+      kodeskpd: null,
+      waktu_masuk: '08:00',
+      waktu_keluar: '17:00',
+      token: 'xx',
     });
-    navigation.replace('MyTabs');
   }
 
   async function presignin() {
@@ -242,9 +240,9 @@ export default function Login({route, navigation}) {
                   mt="2"
                   bg={conf.color}
                   borderRadius={'full'}
-                  onPress={() =>
-                    // signx()
-                    presignin()
+                  onPress={
+                    () => signx()
+                    //presignin()
                   }>
                   Masuk
                 </Button>
@@ -257,6 +255,15 @@ export default function Login({route, navigation}) {
             </Stack>
           </KeyboardAvoidingView>
         </ScrollView>
+        <Text
+          position={'absolute'}
+          bold
+          color="gray.400"
+          fontSize={12}
+          top={Dimensions.get('window').height - 64}
+          alignSelf={'center'}>
+          version {ver}
+        </Text>
       </Stack>
     </NativeBaseProvider>
   );

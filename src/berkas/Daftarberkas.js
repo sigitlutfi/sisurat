@@ -46,56 +46,7 @@ moment.locale('id');
 export default function Daftarberkas({route, navigation}) {
   const {conf, user} = route.params;
   const {signOut} = React.useContext(AuthContext);
-  const [data, setData] = useState([
-    {
-      nama_surat: 'Ini nama surat',
-      tanggal_diterima: '11 12 2023',
-      tanggal_dokumen: '10 10 2023',
-      agenda: 'Ini agenda',
-      disposisi: 2,
-      status: 1,
-    },
-    {
-      nama_surat: 'Ini nama surat',
-      tanggal_diterima: '11 12 2023',
-      tanggal_dokumen: '10 10 2023',
-      agenda: 'Ini agenda',
-      disposisi: 2,
-      status: 2,
-    },
-    {
-      nama_surat: 'Ini nama surat',
-      tanggal_diterima: '11 12 2023',
-      tanggal_dokumen: '10 10 2023',
-      agenda: 'Ini agenda',
-      disposisi: 2,
-      status: 1,
-    },
-    {
-      nama_surat: 'Ini nama surat',
-      tanggal_diterima: '11 12 2023',
-      tanggal_dokumen: '10 10 2023',
-      agenda: 'Ini agenda',
-      disposisi: 2,
-      status: 1,
-    },
-    {
-      nama_surat: 'Ini nama surat',
-      tanggal_diterima: '11 12 2023',
-      tanggal_dokumen: '10 10 2023',
-      agenda: 'Ini agenda',
-      disposisi: 2,
-      status: 1,
-    },
-    {
-      nama_surat: 'Ini nama surat',
-      tanggal_diterima: '11 12 2023',
-      tanggal_dokumen: '10 10 2023',
-      agenda: 'Ini agenda',
-      disposisi: 2,
-      status: 3,
-    },
-  ]);
+  const [data, setData] = useState([]);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -108,6 +59,25 @@ export default function Daftarberkas({route, navigation}) {
   });
   const [as, setAs] = useState(false);
   const [dataas, setDataas] = useState(null);
+
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: 'http://103.100.27.59/~lacaksurat/list_surat.php',
+      headers: {
+        id_pegawai: '1',
+      },
+    })
+      .then(v => {
+        if (v.data.data != undefined) {
+          setData(v.data.data);
+        }
+        console.log(v);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  });
   console.log(filter);
   return (
     <NativeBaseProvider>
@@ -253,7 +223,7 @@ export default function Daftarberkas({route, navigation}) {
 
         <Box p={4} bg={'white'} borderRadius={'3xl'} flex={1} mt={4}>
           <HStack justifyContent={'space-between'} px={4} mb={6}>
-            <Text bold>Total : 120</Text>
+            <Text bold>Total : {data.length}</Text>
 
             <Text bold>10/120</Text>
           </HStack>
@@ -262,8 +232,8 @@ export default function Daftarberkas({route, navigation}) {
             renderItem={({item, index}) => (
               <Pressable px={4} onPress={() => alert('a')} key={index}>
                 <HStack justifyContent={'space-between'}>
-                  <Stack>
-                    <Heading>{item.nama_surat + index}</Heading>
+                  <Stack flex={1}>
+                    <Heading>{item.nama_dokumen + index}</Heading>
 
                     <HStack>
                       <Text w={32}>Tanggal Diterima</Text>
@@ -275,14 +245,14 @@ export default function Daftarberkas({route, navigation}) {
                     </HStack>
                     <HStack>
                       <Text w={32}>Agenda</Text>
-                      <Text>: {item.agenda + index}</Text>
+                      <Text>: {item.agenda}</Text>
                     </HStack>
                   </Stack>
                   <HStack>
                     <Stack space={2}>
                       <Center
                         w={24}
-                        bg={'blue.600'}
+                        bg={'cyan.600'}
                         py={1}
                         borderRadius={'full'}>
                         <Text fontSize={12} color="white">

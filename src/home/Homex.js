@@ -72,79 +72,91 @@ export default function Homex({route, navigation}) {
   return (
     <NativeBaseProvider>
       <Box bg={'gray.200'} flex={1} p={4}>
-        <ScrollView>
-          <Box bg={'white'} borderRadius={'2xl'} p={4}>
-            <HStack>
-              <Image
-                source={
-                  user.foto == null
-                    ? require('../../assets/user.png')
-                    : {uri: user.foto}
-                }
-                alt="UF"
-                h={81}
-                w={81}
-                borderRadius={'full'}
-                bg={'gray.400'}
-              />
-              <Stack ml={4}>
-                <Text>Selamat Datang</Text>
-                <Heading color={conf.color} mb={2}>
-                  {user.name}
-                </Heading>
-                <Text bold>Di Aplikasi Lacak Berkas</Text>
-                <Text bold>{conf.daerah}</Text>
-              </Stack>
-            </HStack>
-            <Divider my={2} />
-            <HStack>
-              <Stack w={120}>
-                <Text bold fontSize={16}>
-                  Semua Berkas
-                </Text>
-                <Text bold fontSize={16}>
-                  Berkas Anda
-                </Text>
-              </Stack>
-              <Stack>
-                <Text bold fontSize={16}>
-                  : 120
-                </Text>
-                <Text bold fontSize={16}>
-                  : 8
-                </Text>
-              </Stack>
-            </HStack>
-          </Box>
+        <Box bg={'white'} borderRadius={'2xl'} p={4} elevation={5}>
+          <HStack>
+            <Image
+              source={
+                user.foto == null
+                  ? require('../../assets/user.png')
+                  : {uri: user.foto}
+              }
+              alt="UF"
+              h={81}
+              w={81}
+              borderRadius={'full'}
+              bg={'gray.400'}
+            />
+            <Stack ml={4}>
+              <Text>Selamat Datang</Text>
+              <Heading color={conf.color} mb={2}>
+                {user.name}
+              </Heading>
+              <Text bold>Di Aplikasi Lacak Berkas</Text>
+              <Text bold>{conf.daerah}</Text>
+            </Stack>
+          </HStack>
+          <Divider my={2} />
+          <HStack>
+            <Stack w={120}>
+              <Text bold fontSize={16}>
+                Semua Berkas
+              </Text>
+              <Text bold fontSize={16}>
+                Berkas Anda
+              </Text>
+            </Stack>
+            <Stack>
+              <Text bold fontSize={16}>
+                : 120
+              </Text>
+              <Text bold fontSize={16}>
+                : 8
+              </Text>
+            </Stack>
+          </HStack>
+        </Box>
 
-          <Pressable
-            onPress={() => navigation.navigate('Tambahberkas')}
-            bg={'purple.500'}
-            borderRadius={'2xl'}
-            mt={4}
-            py={4}
-            alignItems={'center'}>
-            <Image size={64} source={require('../../assets/entr.png')} />
+        <Pressable
+          onPress={() => navigation.navigate('Tambahberkas')}
+          bg={'white'}
+          elevation={5}
+          borderRadius={'2xl'}
+          mt={4}
+          py={4}
+          flex={1}
+          alignItems={'center'}>
+          <Image
+            size={'80%'}
+            resizeMode="contain"
+            alt=""
+            source={require('../../assets/entr.png')}
+          />
 
-            <Text bold color="white" fontSize={28}>
-              TAMBAH BERKAS
-            </Text>
-          </Pressable>
+          <Text bold color="black" fontSize={26}>
+            TAMBAH BERKAS
+          </Text>
+        </Pressable>
 
-          <Pressable
-            onPress={() => navigation.navigate('Daftarberkas')}
-            bg={'blue.500'}
-            borderRadius={'2xl'}
-            mt={4}
-            py={4}
-            alignItems={'center'}>
-            <Image size={64} source={require('../../assets/list.png')} />
+        <Pressable
+          onPress={() => navigation.navigate('Daftarberkas')}
+          bg={'white'}
+          borderRadius={'2xl'}
+          mt={4}
+          elevation={3}
+          py={4}
+          flex={1}
+          alignItems={'center'}>
+          <Image
+            size={'80%'}
+            source={require('../../assets/list.png')}
+            resizeMode="contain"
+            alt=""
+          />
 
-            <Text bold color="white" fontSize={28}>
-              DAFTAR BERKAS
-            </Text>
-          </Pressable>
-        </ScrollView>
+          <Text bold color="black" fontSize={26}>
+            DAFTAR BERKAS
+          </Text>
+        </Pressable>
       </Box>
     </NativeBaseProvider>
   );
