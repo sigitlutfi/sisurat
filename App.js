@@ -529,7 +529,7 @@ export default function App({navigation}) {
             <Stack.Screen
               name="Onboarding"
               component={Onboarding}
-              initialParams={{conf: state.conf}}
+              initialParams={{conf: state.conf, perm: state.perm}}
             />
           ) : state.userData == null ? (
             <>
