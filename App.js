@@ -50,6 +50,9 @@ import {TouchableOpacity} from 'react-native';
 import Ambilberkas from './src/berkas/Scanberkas';
 import Splash from './src/splash/Splash';
 import Onboarding from './src/splash/Onboarding';
+import Scanfile from './src/berkas/Scanfile';
+import Kodetiket from './src/berkas/Kodetiket';
+import Listdisposisi from './src/berkas/Listdisposisi';
 import {PERMISSIONS, checkMultiple, check} from 'react-native-permissions';
 
 const Tab = createBottomTabNavigator();
@@ -570,6 +573,21 @@ export default function App({navigation}) {
               <Stack.Screen
                 name="Riwayat"
                 component={Riwayat}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="Scanfile"
+                component={Scanfile}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="Kodetiket"
+                component={Kodetiket}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="Listdisposisi"
+                component={Listdisposisi}
                 initialParams={{conf: state.conf, user: state.userData}}
               />
 

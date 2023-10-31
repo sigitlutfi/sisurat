@@ -67,71 +67,53 @@ export default function Scanberkas({route, navigation}) {
   };
   return (
     <NativeBaseProvider>
-      <Actionsheet isOpen={as} onClose={() => setAs(false)}>
-        <Actionsheet.Content>
-          <Stack w={'full'} px={4} pb={12}>
-            <Heading>Filter</Heading>
-            <Text mt={6}>Tanggal</Text>
-            <Button
-              onPress={() => {
-                const f = filter;
-                f.tanggal = '11 12 2023';
-                setFilter(f);
-              }}>
-              Pilih tanggal
-            </Button>
-
-            <Text mt={4}>Berkas</Text>
-            <Select
-              minWidth="200"
-              accessibilityLabel="Choose Service"
-              placeholder="Pilih"
-              _selectedItem={{
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={itemValue => {
-                const f = filter;
-                f.berkas = itemValue;
-                setFilter(f);
-              }}>
-              <Select.Item label="Semua berkas" value={1} />
-              <Select.Item label="Berkas saya" value={2} />
-            </Select>
-            <Text mt={4}>Status berkas</Text>
-            <Select
-              minWidth="200"
-              accessibilityLabel="Choose Service"
-              placeholder="Pilih"
-              _selectedItem={{
-                endIcon: <CheckIcon size="5" />,
-              }}
-              mt={1}
-              onValueChange={itemValue => {
-                const f = filter;
-                f.status = itemValue;
-                setFilter(f);
-              }}>
-              <Select.Item label="Diterima" value={1} />
-              <Select.Item label="Ditolak" value={2} />
-              <Select.Item label="Selesai" value={3} />
-            </Select>
-            <Button
-              onPress={() =>
-                setFilter({tanggal: null, berkas: null, status: null})
-              }>
-              HAPUS FILTER
-            </Button>
-          </Stack>
-        </Actionsheet.Content>
-      </Actionsheet>
-
-      <Header tit="Daftar Berkas" nv={navigation} conf={conf} />
+      {/* <Header tit="Daftar Berkas" nv={navigation} conf={conf} /> */}
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
-        <QRCodeScanner
+      <Pressable
+          onPress={() => navigation.navigate('Scanfile')}
+          bg={'white'}
+          elevation={5}
+          borderRadius={'2xl'}
+          mt={4}
+          py={4}
+          flex={1}
+          alignItems={'center'}>
+          <Image
+            size={'80%'}
+            resizeMode="contain"
+            alt=""
+            source={require('../../assets/scan.jpg')}
+          />
+
+          <Text bold color="black" fontSize={26}>
+            SCAN BERKAS
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => navigation.navigate('Kodetiket')}
+          bg={'white'}
+          borderRadius={'2xl'}
+          mt={4}
+          elevation={3}
+          py={4}
+          flex={1}
+          alignItems={'center'}>
+          <Image
+            size={'80%'}
+            source={require('../../assets/tiket.jpg')}
+            resizeMode="contain"
+            alt=""
+          />
+
+          <Text bold color="black" fontSize={26}>
+            KODE TIKET BERKAS
+          </Text>
+        </Pressable>
+        {/* <QRCodeScanner
           onRead={onSuccess}
           flashMode={RNCamera.Constants.FlashMode.torch}
-        />
+        /> */}
       </Box>
     </NativeBaseProvider>
   );
