@@ -41,6 +41,7 @@ moment.locale('id');
 export default function Homex({route, navigation}) {
   const {conf, user} = route.params;
   const {signOut} = React.useContext(AuthContext);
+  const [data, setData] = useState([]);
   const [img, setImg] = useState([
     {
       url: 'https://images.unsplash.com/photo-1509721434272-b79147e0e708?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80',
@@ -107,10 +108,10 @@ export default function Homex({route, navigation}) {
             </Stack>
             <Stack>
               <Text bold fontSize={16}>
-                : 120
+                : {data.length}
               </Text>
               <Text bold fontSize={16}>
-                : 8
+                : {data.length}
               </Text>
             </Stack>
           </HStack>

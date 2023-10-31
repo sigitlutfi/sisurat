@@ -24,6 +24,7 @@ import {
   Text,
   Toast,
   VStack,
+  Link,
 } from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Dimensions, TouchableOpacity} from 'react-native';
@@ -49,9 +50,13 @@ export default function Daftarberkas({route, navigation}) {
   const [data, setData] = useState([]);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [mdetail, setMdetail] = useState(false);
   const [loading, setLoading] = useState(true);
   const showPicker = useCallback(value => setShow(value), []);
   const [filtershow, setFiltershow] = useState(true);
+  const [detailData, setDetailData] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyData, setHistoryData] = useState([]);
   const [filter, setFilter] = useState({
     tanggal: null,
     berkas: null,
@@ -59,6 +64,17 @@ export default function Daftarberkas({route, navigation}) {
   });
   const [as, setAs] = useState(false);
   const [dataas, setDataas] = useState(null);
+
+  const showDetail = item => {
+    setDetailData(item);
+    setMdetail(true);
+  };
+
+  function formatTanggal(tanggal) {
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const tanggalDalamFormat = new Date(tanggal).toLocaleDateString('id-ID', options);
+    return tanggalDalamFormat;
+  }
 
   useEffect(() => {
     axios({
@@ -81,6 +97,8 @@ export default function Daftarberkas({route, navigation}) {
   console.log(filter);
   return (
     <NativeBaseProvider>
+
+      {/* Actionsheet untuk tampilan filter */}
       <Actionsheet isOpen={as} onClose={() => setAs(false)}>
         <Actionsheet.Content>
           <Stack w={'full'} px={4} pb={12}>
@@ -139,6 +157,66 @@ export default function Daftarberkas({route, navigation}) {
           </Stack>
         </Actionsheet.Content>
       </Actionsheet>
+
+    {mdetail && (
+    <Modal isOpen={mdetail} onClose={() => setMdetail(false)}>
+      <Modal.Content>
+        <Modal.CloseButton />
+        <Modal.Header>Detail Berkas</Modal.Header>
+          <Modal.Body>
+            {detailData && (
+              <VStack space={2}>
+                <HStack>
+                  <Text bold>Nama Dokumen: </Text>
+                </HStack>
+                <Text>{detailData.nama_dokumen}</Text>
+                <HStack>
+                  <Text bold>Agenda: </Text>
+                  <Text>{detailData.agenda}</Text>
+                </HStack>
+                <HStack>
+                  <Text bold>Nama Pengirim: </Text>
+                  <Text>{detailData.nama_pengirim}</Text>
+                </HStack>
+                <HStack>
+                  <Text bold>Perihal: </Text>
+                  <Text>{detailData.perihal}</Text>
+                </HStack>
+                <HStack>
+                  <Text bold>Ringkasan Dokumen: </Text>
+                </HStack>
+                <Text>{detailData.ringkasan_dokumen}</Text>
+                <HStack>
+                  <Text bold>Tanggal Diterima: </Text>
+                  <Text>{formatTanggal(detailData.tanggal_diterima)}</Text>
+                </HStack>
+                <HStack>
+                  <Text bold>Tanggal Dokumen: </Text>
+                  <Text>{formatTanggal(detailData.tanggal_dokumen)}</Text>
+                </HStack>
+                <HStack>
+                  <Text bold>Tanggal Agenda: </Text>
+                  <Text>{formatTanggal(detailData.tanggal_agenda || 'Tidak ada')}</Text>
+                </HStack>
+                <HStack>
+                  <Text bold>Lampiran: </Text>
+                  <Text color={'blue.500'}>
+                    <Link href={detailData.lampiran.path} isExternal>
+                      Download Berkas
+                    </Link>
+                  </Text>
+                </HStack>
+                <Button 
+                  onPress={() => setMdetail(false)}
+                  bg={conf.color}
+                  >Tutup</Button>
+              </VStack>
+            )}
+          </Modal.Body>
+      </Modal.Content>
+    </Modal>
+    )}
+
 
       {show && (
         <MonthPicker
@@ -225,28 +303,41 @@ export default function Daftarberkas({route, navigation}) {
           <HStack justifyContent={'space-between'} px={4} mb={6}>
             <Text bold>Total : {data.length}</Text>
 
-            <Text bold>10/120</Text>
+            <Text bold>{data.length}/120</Text>
           </HStack>
           <FlatList
             data={data}
             renderItem={({item, index}) => (
-              <Pressable px={4} onPress={() => alert('a')} key={index}>
+              <Pressable px={4} onPress={() => showDetail(item)} key={index}>
                 <HStack justifyContent={'space-between'}>
                   <Stack flex={1}>
                     <Heading>{item.nama_dokumen + index}</Heading>
 
                     <HStack>
-                      <Text w={32}>Tanggal Diterima</Text>
-                      <Text>: {item.tanggal_diterima}</Text>
+                      <Text w={24}>Tanggal Diterima</Text>
+                      <Text>: {formatTanggal(item.tanggal_diterima)}</Text>
+                    </HStack> 
+                    <HStack>
+                      <Text w={24}>Tanggal Dokumen</Text>
+                      <Text>: {formatTanggal(item.tanggal_dokumen)}</Text>
                     </HStack>
                     <HStack>
-                      <Text w={32}>Tanggal Dokumen</Text>
-                      <Text>: {item.tanggal_dokumen}</Text>
-                    </HStack>
-                    <HStack>
-                      <Text w={32}>Agenda</Text>
+                      <Text w={24}>Agenda</Text>
                       <Text>: {item.agenda}</Text>
                     </HStack>
+                    <Button alignSelf={'center'}
+                      bg={'blue.500'}
+                      onPress={() => {
+                        // Navigate to the History.js screen
+                        const navigation = useNavigation();
+                        navigation.navigate('History', {
+                          // Pass any data you want to send to the History screen here
+                          itemId: item.id, // Example: Pass the item's ID
+                        });
+                      }}
+                    >
+                      View History
+                    </Button>
                   </Stack>
                   <HStack>
                     <Stack space={2}>
@@ -255,7 +346,8 @@ export default function Daftarberkas({route, navigation}) {
                         bg={'cyan.600'}
                         py={1}
                         borderRadius={'full'}>
-                        <Text fontSize={12} color="white">
+                        <Text fontSize={12} color="white"
+                        >
                           DISPOSISI {item.disposisi}
                         </Text>
                       </Center>
