@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Actionsheet,
   Avatar,
@@ -69,7 +70,7 @@ export default function Daftarberkas({route, navigation}) {
   };
 
   function formatTanggal(tanggal) {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return new Date(tanggal).toLocaleDateString('id-ID', options);
   }
   useEffect(() => {
@@ -216,6 +217,7 @@ export default function Daftarberkas({route, navigation}) {
 
       {show && (
         <MonthPicker
+          // eslint-disable-next-line no-undef
           onChange={onValueChange}
           value={date}
           maximumDate={new Date()}
@@ -334,6 +336,18 @@ export default function Daftarberkas({route, navigation}) {
                       }}>
                       <Text fontSize={12} color="white">
                         DISPOSISI {item.disposisi}
+                      </Text>
+                    </Button>
+                    <Button
+                      w={24}
+                      bg={'cyan.800'}
+                      py={1}
+                      borderRadius={'full'}
+                      onPress={() => {
+                        navigation.navigate('History'); 
+                      }}>
+                      <Text fontSize={12} color="white">
+                        HISTORY {item.history}
                       </Text>
                     </Button>
                       <Center

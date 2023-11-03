@@ -48,6 +48,7 @@ import DocumentPicker from 'react-native-document-picker';
 import Header from '../common/Header';
 
 export default function Tambahberkas({route, navigation}) {
+	const {conf, user} = route.params;
   const [loading, setLoading] = useState(true);
   const [nama, setNama] = useState("");
 	const [agenda, setAgenda] = useState("");
@@ -162,6 +163,7 @@ export default function Tambahberkas({route, navigation}) {
 
 	return (
 		<NativeBaseProvider>
+			<Header tit="Daftar Berkas" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
       <ScrollView style={{ flex: 1 }}>
 			<View style={styles.container}>
