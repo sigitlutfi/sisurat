@@ -53,6 +53,8 @@ import Onboarding from './src/splash/Onboarding';
 import Scanfile from './src/berkas/Scanfile';
 import Kodetiket from './src/berkas/Kodetiket';
 import Listdisposisi from './src/berkas/Listdisposisi';
+import History from './src/berkas/History';
+
 import {PERMISSIONS, checkMultiple, check} from 'react-native-permissions';
 
 const Tab = createBottomTabNavigator();
@@ -588,6 +590,11 @@ export default function App({navigation}) {
               <Stack.Screen
                 name="Listdisposisi"
                 component={Listdisposisi}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="History"
+                component={History}
                 initialParams={{conf: state.conf, user: state.userData}}
               />
 
