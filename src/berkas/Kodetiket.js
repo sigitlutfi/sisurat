@@ -102,7 +102,7 @@ import {
             borderWidth={1}
           >
             <Input
-              placeholder={`Kode Tiket ${index + 1}`}
+              placeholder={`Masukkan Kode Tiket`}
               onChangeText={(text) => handleTicketCodeChange(text, index)}
               value={code}
             />

@@ -141,9 +141,9 @@ export default function Daftarberkas({route, navigation}) {
                 f.status = itemValue;
                 setFilter(f);
               }}>
-              <Select.Item label="Diterima" value={1} />
-              <Select.Item label="Ditolak" value={2} />
-              <Select.Item label="Selesai" value={3} />
+              <Select.Item label="Dibaca" value={1} />
+              <Select.Item label="Arsip" value={2} />
+              <Select.Item label="Belumdibaca" value={3} />
             </Select>
             <Button
               onPress={() =>
@@ -290,7 +290,7 @@ export default function Daftarberkas({route, navigation}) {
                 px={4}
                 py={2}>
                 <Text color={'white'} bold>
-                  Diterima
+                  Dibaca
                 </Text>
               </Stack>
             )}
@@ -323,51 +323,60 @@ export default function Daftarberkas({route, navigation}) {
                         <Text w={32}>Agenda</Text>
                         <Text>: {item.agenda}</Text>
                       </HStack>
-                      </Stack>
-                      <HStack>
-                    <Stack space={2}>
-                    <Button
-                      w={24}
-                      bg={'cyan.600'}
-                      py={1}
-                      borderRadius={'full'}
-                      onPress={() => {
-                        navigation.navigate('Listdisposisi'); 
-                      }}>
-                      <Text fontSize={12} color="white">
-                        DISPOSISI {item.disposisi}
-                      </Text>
-                    </Button>
-                    <Button
-                      w={24}
+                      
+                      <HStack spacing={4}>
+                      <Button marginTop={4} marginRight={2}
                       bg={'cyan.800'}
                       py={1}
                       borderRadius={'full'}
                       onPress={() => {
                         navigation.navigate('History'); 
                       }}>
-                      <Text fontSize={12} color="white">
-                        HISTORY {item.history}
-                      </Text>
+                      <Icon
+                        name="history" 
+                        as={MaterialCommunityIcons}
+                        size={5} 
+                        color="white"
+                      />
                     </Button>
+
+                    <Button marginTop={4}
+                      bg={'cyan.600'}
+                      py={1}
+                      borderRadius={'full'}
+                      onPress={() => {
+                        navigation.navigate('Listdisposisi'); 
+                      }}>
+                      <Icon
+                        name="file-send-outline" 
+                        as={MaterialCommunityIcons}
+                        size={5} 
+                        color="white"
+                      />
+                    </Button>
+                    </HStack>
+
+                      </Stack>
+                      <HStack>
+                    <Stack space={2}>
                       <Center
-                        w={24}
+                        w={12}
                         bg={
                           item.status == 1
-                            ? 'orange.600'
+                            ? 'green.600'
                             : item.status == 2
                             ? 'red.600'
-                            : 'green.600'
+                            : 'orange.600'
                         }
                         py={1}
                         borderRadius={'full'}>
-                        <Text fontSize={12} color="white">
-                          {item.status == 1
-                            ? 'DITERIMA'
-                            : item.status == 2
-                            ? 'DITOLAK'
-                            : 'SELESAI'}
-                        </Text>
+                        {item.status == 1 ? (
+        <Icon  as={MaterialCommunityIcons} name="check-all" Size={5} color="white" />
+      ) : item.status == 2 ? (
+        <Text fontSize={12} color="white">ARSIP</Text>
+      ) : (
+        <Icon as={MaterialCommunityIcons} name="check" Size={5} color="white" />
+      )}
                       </Center>
                     </Stack>
                   </HStack>

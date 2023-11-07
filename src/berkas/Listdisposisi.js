@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios';
@@ -44,6 +45,7 @@ export default function Daftarberkas({ route, navigation }) {
   const [notification, setNotification] = useState('');
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+  const [keterangan, setKeterangan] = useState('');
 
   const [idPegawai, setIdPegawai] = useState('');
 const [username, setUsername] = useState('');
@@ -66,6 +68,37 @@ const [username, setUsername] = useState('');
         console.log(error);
       });
   }, []);
+
+  const handleSimpanDisposisi = async () => {
+  console.log("Create:", formData);
+  const formData = new FormData();
+    
+		formData.append("p_tiket_id", tiket);
+		formData.append("p_id_pegawai_penerima", idPegawai);
+		formData.append("p_keterangan", keterangan);
+		try {
+			const headers = {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			};
+			const response = await axios.post(
+				"http://103.100.27.59/~lacaksurat/add_history_disposisi.php",
+				formData,
+				headers
+			);
+      
+      if (response.data.code === 200) {
+        setLoading(true)
+        Alert.alert(response.data.message + ' Tiket ID: ' + response.data.tiket_id);
+        console.log("Response", response.data);
+      } else {
+        Alert.alert("Error: ", response.data.message)
+      }
+		} catch (error) {
+			console.error("Error", error);
+		}
+	};
 
   const handleSearch = () => {
     // Perform a search based on the searchKeyword and update searchResults state
@@ -121,17 +154,27 @@ const [username, setUsername] = useState('');
               </Center>
             </Pressable >
           </HStack>
-          <HStack justifyContent={'space-between'}>
-          <Stack>
-            <View>
-              <Text>Username: {user.username}</Text>
-              <Text>Nama: {user.name}</Text>
-              <Text>Hak Akses: {user.hak_akses}</Text>
-              <Text>Nomor HP: {user.nomer_hp}</Text>
-            </View>
-          </Stack>
-        </HStack>
-         {/* Modal for displaying search results */}
+          <Box bg="gray.100" p={4} borderRadius={8}>
+  <Text fontWeight="bold" mb={2}>
+    Nama yang akan dikirim
+  </Text>
+  <Text fontWeight="bold" fontSize={24}>
+    {user.username}
+  </Text>
+</Box>
+<Box bg="gray.100" p={4} borderRadius={8}>
+  <Text fontWeight="bold" mb={2}>
+    Keterangan
+  </Text>
+  <Box borderWidth={1} borderColor="gray.300" shadow={2}>
+    <Input
+      variant="filled"
+      placeholder="Masukkan keterangan"
+      value={keterangan}
+      onChangeText={(text) => setKeterangan(text)}
+    />
+  </Box>
+</Box>
          <Modal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)}>
           <Modal.Content>
             <Modal.Header>Pegawai Search Results</Modal.Header>
@@ -143,11 +186,9 @@ const [username, setUsername] = useState('');
                   _pressed={{ bg: 'gray.200' }}
                   mb={2}
                   p={2}
-                  borderWidth={1}
-                  borderRadius={8}
                 >
                   <Text>
-                    <Text fontWeight="bold">Username:</Text> {result.username}
+                    <Text fontWeight="bold"></Text> {result.username}
                   </Text>
                   {/* Add other user information here as needed */}
                 </Pressable>
@@ -162,7 +203,7 @@ const [username, setUsername] = useState('');
   borderRadius={'full'}
   marginTop={4}
   bg={conf.color}
-  onPress={sendNotification}
+  onPress={handleSimpanDisposisi}
 >
   Kirim
 </Button>

@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import axios from 'axios';
 import {
   Actionsheet,
   Avatar,
@@ -24,89 +27,58 @@ import {
   VStack,
   Link,
 } from 'native-base';
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/id';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../common/Header';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DocumentPicker from 'react-native-document-picker';
 
 moment.locale('id');
 
-export default function History({ route, navigation }) {
-  // ... other code ...
-
+export default function Daftarberkas({ route, navigation }) {
   const { conf, user } = route.params;
-
-  useEffect(() => {
-    // Fetch disposisi data using Axios and set it in the 'data' state
-    axios({
-      method: 'get',
-      url: 'http://103.100.27.59/~lacaksurat/add_history_disposisi.php',
-      headers: {
-        id_pegawai: '2',
-      },
-    })
-      .then((response) => {
-        if (response.data.data !== undefined) {
-          setData(response.data.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const [data, setData] = useState([]);
 
   const timelineData = [
-    { time: '09:00', title: 'Document', description: 'Keterangan', type: 'meeting' },
-    { time: '10:45', title: 'Document', description: 'Keterangan', type: 'meeting' },
-    { time: '12:00', title: 'Document', description: 'Keterangan', type: 'meeting' },
+    { datetime: '2023-11-06T09:00:00', title: 'Dokumen Diterima', description: 'Oleh Pihak Resepsionis' },
+    { datetime: '2023-11-06T10:45:00', title: 'Dokumen Diterima', description: 'Oleh Mas X' },
+    { datetime: '2023-11-07T12:00:00', title: 'Dokumen Diterima', description: 'Oleh Mas Y' },
+    { datetime: '2023-11-07T14:00:00', title: 'Dokumen Diterima', description: 'Oleh Mas Z' },
   ];
-
-
 
   return (
     <NativeBaseProvider>
       <Header tit="History" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
-      <HStack>
-    <View style={styles.container}>
-      <FlatList
-        data={timelineData}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.timelineItem}>
-            <View style={styles.timeContainer}>
-              <MaterialCommunityIcons name="clock" size={24} color="blue" />
-              <Text style={styles.timeText}>{item.time}</Text>
-              {item.type === 'meeting' && (
-                <MaterialCommunityIcons name="calendar" size={24} color="blue" />
-              )}
-              {item.type === 'reminder' && (
-                <MaterialCommunityIcons name="alarm" size={24} color="green" />
-              )}
-              {item.type === 'task' && (
-                <MaterialCommunityIcons name="checkbox-marked" size={24} color="purple" />
-              )}
-              {item.type === 'note' && (
-                <MaterialCommunityIcons name="note" size={24} color="orange" />
+        <Box>
+          {timelineData.map((item, index) => (
+            <View key={index}>
+              <Box flexDirection="row" alignItems="center">
+                <Box width={24}>
+                  <Text>{moment(item.datetime).format('HH:mm')}</Text>
+                  <Divider orientation="vertical" h={6} mx={2} borderColor="gray.400" />
+                </Box>
+                <Box flex={1}>
+                  <Text fontSize="lg" fontWeight="bold">
+                    {item.title}
+                  </Text>
+                  <Text>{item.description}</Text>
+                </Box>
+              </Box>
+              <Box flexDirection="row" alignItems="center">
+                <Box width={24} />
+                <Box flex={1}>
+                  <Text>{moment(item.datetime).format('YYYY-MM-DD')}</Text>
+                </Box>
+              </Box>
+              {index < timelineData.length - 1 && (
+                <Divider my={2} borderColor="gray.400" />
               )}
             </View>
-            <View style={styles.eventDetails}>
-              <Text style={styles.eventTitle}>{item.title}</Text>
-              <Text style={styles.eventDescription}>{item.description}</Text>
-            </View>
-          </View>
-        )}
-      />
-    </View>
-    </HStack>
-    </Box>
+          ))}
+        </Box>
+      </Box>
     </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  // ... your existing styles ...
-});

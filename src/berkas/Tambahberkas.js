@@ -164,7 +164,7 @@ export default function Tambahberkas({route, navigation}) {
 
 	return (
 		<NativeBaseProvider>
-			<Header tit="Daftar Berkas" nv={navigation} conf={conf} />
+			<Header tit="Tambah Berkas" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
       <ScrollView style={{ flex: 1 }}>
 			<View style={styles.container}>
