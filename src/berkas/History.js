@@ -41,42 +41,76 @@ export default function Daftarberkas({ route, navigation }) {
   const [data, setData] = useState([]);
 
   const timelineData = [
-    { datetime: '2023-11-06T09:00:00', title: 'Dokumen Diterima', description: 'Oleh Pihak Resepsionis' },
-    { datetime: '2023-11-06T10:45:00', title: 'Dokumen Diterima', description: 'Oleh Mas X' },
-    { datetime: '2023-11-07T12:00:00', title: 'Dokumen Diterima', description: 'Oleh Mas Y' },
-    { datetime: '2023-11-07T14:00:00', title: 'Dokumen Diterima', description: 'Oleh Mas Z' },
+    {
+      datetime: '2023-11-06T09:00:00',
+      title: 'Dokumen Diterima',
+      description: 'Oleh Pihak Resepsionis',
+      status: 'Diterima',
+      icon: 'check-circle',
+    },
+    {
+      datetime: '2023-11-06T10:45:00',
+      title: 'Dokumen Sedang Ditangan',
+      description: 'Oleh Mas X',
+      status: 'Dalam Pegangan',
+      icon: 'check-circle',
+    },
+    {
+      datetime: '2023-11-07T12:00:00',
+      title: 'Dokumen Sedang Ditangan',
+      description: 'Oleh Mas Y',
+      status: 'Dalam Pegangan',
+      icon: 'check-circle',
+    },
+    {
+      datetime: '2023-11-07T14:00:00',
+      title: 'Dokumen Sedang Ditangan',
+      description: 'Oleh Mas Z',
+      status: 'Selesai',
+      icon: 'check-circle',
+    },
   ];
+  
+
 
   return (
     <NativeBaseProvider>
       <Header tit="History" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <Box>
-          {timelineData.map((item, index) => (
-            <View key={index}>
-              <Box flexDirection="row" alignItems="center">
-                <Box width={24}>
-                  <Text>{moment(item.datetime).format('HH:mm')}</Text>
-                  <Divider orientation="vertical" h={6} mx={2} borderColor="gray.400" />
-                </Box>
-                <Box flex={1}>
-                  <Text fontSize="lg" fontWeight="bold">
-                    {item.title}
-                  </Text>
-                  <Text>{item.description}</Text>
-                </Box>
-              </Box>
-              <Box flexDirection="row" alignItems="center">
-                <Box width={24} />
-                <Box flex={1}>
-                  <Text>{moment(item.datetime).format('YYYY-MM-DD')}</Text>
-                </Box>
-              </Box>
-              {index < timelineData.length - 1 && (
-                <Divider my={2} borderColor="gray.400" />
-              )}
-            </View>
-          ))}
+        {timelineData.map((item, index) => (
+  <View key={index}>
+    <Box flexDirection="row" alignItems="center">
+      <Box width={24}>
+        <Text>{moment(item.datetime).format('HH:mm')}</Text>
+        <Divider orientation="vertical" h={6} mx={2} borderColor="gray.400" />
+      </Box>
+      <Box flex={1}>
+        <Text fontSize="lg" fontWeight="bold">
+          {item.title}
+        </Text>
+        <Text>{item.description}</Text>
+      </Box>
+      <Box>
+        <MaterialCommunityIcons
+          name={item.icon}
+          size={24}
+          color={item.status === 'Selesai' ? 'green' : 'blue'}
+        />
+      </Box>
+    </Box>
+    <Box flexDirection="row" alignItems="center">
+      <Box width={24} />
+      <Box flex={1}>
+        <Text>{moment(item.datetime).format('YYYY-MM-DD')}</Text>
+      </Box>
+    </Box>
+    {index < timelineData.length - 1 && (
+      <Divider my={2} borderColor="gray.400" />
+    )}
+  </View>
+))}
+
         </Box>
       </Box>
     </NativeBaseProvider>

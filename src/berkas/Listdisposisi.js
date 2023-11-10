@@ -69,39 +69,8 @@ const [username, setUsername] = useState('');
       });
   }, []);
 
-  const handleSimpanDisposisi = async () => {
-  console.log("Create:", formData);
-  const formData = new FormData();
-    
-		formData.append("p_tiket_id", tiket);
-		formData.append("p_id_pegawai_penerima", idPegawai);
-		formData.append("p_keterangan", keterangan);
-		try {
-			const headers = {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			};
-			const response = await axios.post(
-				"http://103.100.27.59/~lacaksurat/add_history_disposisi.php",
-				formData,
-				headers
-			);
-      
-      if (response.data.code === 200) {
-        setLoading(true)
-        Alert.alert(response.data.message + ' Tiket ID: ' + response.data.tiket_id);
-        console.log("Response", response.data);
-      } else {
-        Alert.alert("Error: ", response.data.message)
-      }
-		} catch (error) {
-			console.error("Error", error);
-		}
-	};
 
   const handleSearch = () => {
-    // Perform a search based on the searchKeyword and update searchResults state
     const results = data.filter((item) =>
       Object.values(item).some((value) => value.includes(searchKeyword))
     );
@@ -110,20 +79,14 @@ const [username, setUsername] = useState('');
   };
 
   const handleResultClick = (result) => {
-    // Add navigation logic here to navigate to the front page with user data
     navigation.navigate('Listdisposisi', { user: result });
-    setShowSearchModal(false); // Tutup modal pencarian setelah mengklik hasil
+    setShowSearchModal(false); 
   };
   const sendNotification = () => {
-    // Your logic to send the notification goes here
-  
-    // Show the success message
     setIsSuccessMessageVisible(true);
-  
-    // You can reset the success message after a certain time, if needed
     setTimeout(() => {
       setIsSuccessMessageVisible(false);
-    }, 5000); // Hide the success message after 5 seconds (adjust the duration as needed)
+    }, 5000); 
   };
   {isSuccessMessageVisible && (
     <Text textAlign="center" color="green.500" fontWeight="bold" mt={2}>
@@ -156,7 +119,7 @@ const [username, setUsername] = useState('');
           </HStack>
           <Box bg="gray.100" p={4} borderRadius={8}>
   <Text fontWeight="bold" mb={2}>
-    Nama yang akan dikirim
+    Pilih Nama
   </Text>
   <Text fontWeight="bold" fontSize={24}>
     {user.username}
@@ -177,7 +140,7 @@ const [username, setUsername] = useState('');
 </Box>
          <Modal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)}>
           <Modal.Content>
-            <Modal.Header>Pegawai Search Results</Modal.Header>
+            <Modal.Header>Pilih Disposisi</Modal.Header>
             <Modal.Body>
               {searchResults.map((result, index) => (
                 <Pressable
@@ -203,7 +166,7 @@ const [username, setUsername] = useState('');
   borderRadius={'full'}
   marginTop={4}
   bg={conf.color}
-  onPress={handleSimpanDisposisi}
+  onPress={sendNotification}
 >
   Kirim
 </Button>
