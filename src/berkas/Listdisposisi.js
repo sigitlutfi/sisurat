@@ -46,9 +46,7 @@ export default function Daftarberkas({ route, navigation }) {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
   const [keterangan, setKeterangan] = useState('');
-
-  const [idPegawai, setIdPegawai] = useState('');
-const [username, setUsername] = useState('');
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   useEffect(() => {
     // Fetch disposisi data using Axios and set it in the 'data' state
@@ -69,7 +67,6 @@ const [username, setUsername] = useState('');
       });
   }, []);
 
-
   const handleSearch = () => {
     const results = data.filter((item) =>
       Object.values(item).some((value) => value.includes(searchKeyword))
@@ -79,20 +76,22 @@ const [username, setUsername] = useState('');
   };
 
   const handleResultClick = (result) => {
-    navigation.navigate('Listdisposisi', { user: result });
-    setShowSearchModal(false); 
+    const isUserSelected = selectedUsers.some((user) => user.id === result.id);
+
+    if (!isUserSelected) {
+      setSelectedUsers([...selectedUsers, result]);
+    } else {
+      setSelectedUsers(selectedUsers.filter((user) => user.id !== result.id));
+    }
+    setShowSearchModal(false);
   };
+
   const sendNotification = () => {
     setIsSuccessMessageVisible(true);
     setTimeout(() => {
       setIsSuccessMessageVisible(false);
-    }, 5000); 
+    }, 5000);
   };
-  {isSuccessMessageVisible && (
-    <Text textAlign="center" color="green.500" fontWeight="bold" mt={2}>
-      Selamat, data Anda berhasil dikirim!
-    </Text>
-  )}
 
   return (
     <NativeBaseProvider>
@@ -115,61 +114,67 @@ const [username, setUsername] = useState('');
                   name="magnify"
                 />
               </Center>
-            </Pressable >
+            </Pressable>
           </HStack>
           <Box bg="gray.100" p={4} borderRadius={8}>
-  <Text fontWeight="bold" mb={2}>
-    Pilih Nama
-  </Text>
-  <Text fontWeight="bold" fontSize={24}>
-    {user.username}
-  </Text>
-</Box>
-<Box bg="gray.100" p={4} borderRadius={8}>
-  <Text fontWeight="bold" mb={2}>
-    Keterangan
-  </Text>
-  <Box borderWidth={1} borderColor="gray.300" shadow={2}>
-    <Input
-      variant="filled"
-      placeholder="Masukkan keterangan"
-      value={keterangan}
-      onChangeText={(text) => setKeterangan(text)}
-    />
-  </Box>
-</Box>
-         <Modal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)}>
-          <Modal.Content>
-            <Modal.Header>Pilih Disposisi</Modal.Header>
-            <Modal.Body>
-              {searchResults.map((result, index) => (
-                <Pressable
-                  key={index}
-                  onPress={() => handleResultClick(result)}
-                  _pressed={{ bg: 'gray.200' }}
-                  mb={2}
-                  p={2}
-                >
-                  <Text>
-                    <Text fontWeight="bold"></Text> {result.username}
-                  </Text>
-                  {/* Add other user information here as needed */}
-                </Pressable>
-              ))}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onPress={() => setShowSearchModal(false)}>Close</Button>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-        <Button
-  borderRadius={'full'}
-  marginTop={4}
-  bg={conf.color}
-  onPress={sendNotification}
->
-  Kirim
-</Button>
+            <Text fontWeight="bold" mb={2}>
+              Pilih Nama
+            </Text>
+            {selectedUsers.map((user) => (
+              <Text key={user.id} fontWeight="bold" fontSize={24} mb={2}>
+                {user.username}
+              </Text>
+            ))}
+          </Box>
+          <Box bg="gray.100" p={4} borderRadius={8}>
+            <Text fontWeight="bold" mb={2}>
+              Keterangan
+            </Text>
+            <Box borderWidth={1} borderColor="gray.300" shadow={2}>
+              <Input
+                variant="filled"
+                placeholder="Masukkan keterangan"
+                value={keterangan}
+                onChangeText={(text) => setKeterangan(text)}
+              />
+            </Box>
+          </Box>
+          <Modal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)}>
+            <Modal.Content>
+              <Modal.Header>Pilih Disposisi</Modal.Header>
+              <Modal.Body>
+                {searchResults.map((result, index) => (
+                  <Pressable
+                    key={index}
+                    onPress={() => handleResultClick(result)}
+                    _pressed={{ bg: 'gray.200' }}
+                    mb={2}
+                    p={2}
+                  >
+                    <Text>
+                      <Text fontWeight="bold"></Text> {result.username}
+                    </Text>
+                  </Pressable>
+                ))}
+              </Modal.Body>
+              {/* <Modal.Footer>
+                <Button onPress={() => setShowSearchModal(false)}>Close</Button>
+              </Modal.Footer> */}
+            </Modal.Content>
+          </Modal>
+          <Button
+            borderRadius={'full'}
+            marginTop={4}
+            bg={conf.color}
+            onPress={sendNotification}
+          >
+            Kirim
+          </Button>
+          {isSuccessMessageVisible && (
+            <Text textAlign="center" color="green.500" fontWeight="bold" mt={2}>
+              Selamat, dokumen Anda berhasil dikirim!
+            </Text>
+          )}
         </Box>
       </Box>
     </NativeBaseProvider>
