@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View,  FlatList, TouchableOpacity,Alert, } from 'react-native';
 import axios from 'axios';
 import {
   Actionsheet,
@@ -24,6 +24,7 @@ import {
   Select,
   Spinner,
   Stack,
+  Text,
   Toast,
   VStack,
   Link,
@@ -34,6 +35,7 @@ import Header from '../common/Header';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DocumentPicker from 'react-native-document-picker';
+import { useNavigation } from '@react-navigation/native';
 
 moment.locale('id');
 
@@ -87,10 +89,25 @@ export default function Daftarberkas({ route, navigation }) {
   };
 
   const sendNotification = () => {
-    setIsSuccessMessageVisible(true);
-    setTimeout(() => {
-      setIsSuccessMessageVisible(false);
-    }, 5000);
+    // Show confirmation popup
+    Alert.alert(
+      'Konfirmasi',
+      'Apakah Anda yakin ingin mendisposisikan berkas anda?',
+      [
+        {
+          text: 'Tidak',
+          style: 'cancel',
+        },
+        {
+          text: 'Iya',
+          onPress: () => {
+            navigation.navigate('Disposisiberhasil');
+            setIsSuccessMessageVisible(true);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -99,22 +116,25 @@ export default function Daftarberkas({ route, navigation }) {
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <Box p={4} bg={'white'} borderRadius={'3xl'}>
           <HStack space={4}>
-            <Input
+            <Select
               flex={1}
               variant={'rounded'}
-              value={searchKeyword}
-              onChangeText={(text) => setSearchKeyword(text)}
-            />
-            <Pressable w={12} h={12} onPress={handleSearch}>
-              <Center flex={1} bg={conf.color} borderRadius={'full'}>
-                <Icon
-                  color="white"
-                  size={6}
-                  as={MaterialCommunityIcons}
-                  name="magnify"
+              placeholder="Pilih tujuan disposisi"
+              onValueChange={(value) => handleResultClick(value)}
+            >
+              {data.map((result, index) => (
+                <Select.Item
+                  key={index}
+                  label={
+                    <HStack space={2} alignItems={'center'}>
+                      <Avatar source={{ uri: result.profilePicture }} size="md" />
+                      <Text color="black" bold>{result.username}</Text>
+                    </HStack>
+                  }
+                  value={result}
                 />
-              </Center>
-            </Pressable>
+              ))}
+            </Select>
           </HStack>
           <Box bg="gray.100" p={4} borderRadius={8}>
             <Text fontWeight="bold" mb={2}>
@@ -151,15 +171,12 @@ export default function Daftarberkas({ route, navigation }) {
                     mb={2}
                     p={2}
                   >
-                    <Text>
-                      <Text fontWeight="bold"></Text> {result.username}
-                    </Text>
+                    
+                      <Text fontWeight="bold" color="black"> {result.username}</Text>
+                   
                   </Pressable>
                 ))}
               </Modal.Body>
-              {/* <Modal.Footer>
-                <Button onPress={() => setShowSearchModal(false)}>Close</Button>
-              </Modal.Footer> */}
             </Modal.Content>
           </Modal>
           <Button
@@ -170,11 +187,6 @@ export default function Daftarberkas({ route, navigation }) {
           >
             Kirim
           </Button>
-          {isSuccessMessageVisible && (
-            <Text textAlign="center" color="green.500" fontWeight="bold" mt={2}>
-              Selamat, dokumen Anda berhasil dikirim!
-            </Text>
-          )}
         </Box>
       </Box>
     </NativeBaseProvider>

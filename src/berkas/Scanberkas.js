@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Actionsheet,
   Avatar,
@@ -26,7 +27,7 @@ import {
   VStack,
 } from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, Linking, TouchableOpacity} from 'react-native';
+import {Dimensions, Linking,StyleSheet, TouchableOpacity} from 'react-native';
 import AuthContext from '../../AuthContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ImageSlider} from 'react-native-image-slider-banner';
@@ -65,56 +66,94 @@ export default function Scanberkas({route, navigation}) {
     //Linking.openURL(e.data).catch(err =>
     console.log(e);
   };
+  const [ticketCodes, setTicketCodes] = useState(['']); // State untuk kode tiket
+
+  const handleTicketCodeChange = (text, index) => {
+    const newCodes = [...ticketCodes];
+    newCodes[index] = text;
+    setTicketCodes(newCodes);
+  };
+  const handleActionButtonPress = () => {
+    // Add your custom action here
+    console.log('Action button pressed');
+  };
   return (
     <NativeBaseProvider>
-      {/* <Header tit="Daftar Berkas" nv={navigation} conf={conf} /> */}
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
-      <Pressable
-          onPress={() => navigation.navigate('Scanfile')}
-          bg={'white'}
-          elevation={5}
-          borderRadius={'2xl'}
-          mt={4}
-          py={4}
-          flex={1}
-          alignItems={'center'}>
-          <Image
-            size={'80%'}
-            resizeMode="contain"
-            alt=""
-            source={require('../../assets/scan.jpg')}
-          />
-
-          <Text bold color="black" fontSize={26}>
-            SCAN BERKAS
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => navigation.navigate('Kodetiket')}
-          bg={'white'}
-          borderRadius={'2xl'}
-          mt={4}
-          elevation={3}
-          py={4}
-          flex={1}
-          alignItems={'center'}>
-          <Image
-            size={'80%'}
-            source={require('../../assets/tiket.jpg')}
-            resizeMode="contain"
-            alt=""
-          />
-
-          <Text bold color="black" fontSize={26}>
-            KODE TIKET BERKAS
-          </Text>
-        </Pressable>
-        {/* <QRCodeScanner
-          onRead={onSuccess}
+        <QRCodeScanner
+          onRead={(v) => console.log(v)}
           flashMode={RNCamera.Constants.FlashMode.torch}
-        /> */}
+          topContent={
+            <VStack flex={1} justifyContent="center">
+              <Text style={styles.centerText}>
+                Mohon{" "}
+                <Text style={styles.textBold}>Arahkan ke QR Code</Text>
+              </Text>
+            </VStack>
+          }
+          cameraStyle={{
+            width: 300,
+            height: 300,
+            alignSelf: 'center',
+            justifyContent: 'center',
+          }}
+        />
+        <Divider />
+        <VStack>
+          <Text fontSize={20} fontWeight="bold" marginLeft={160} >Atau</Text>
+        </VStack>
+        <Divider />
+        <VStack>
+          <Heading> Kode Tiket</Heading>
+          {ticketCodes.map((code, index) => (
+            <Box
+              key={index}
+              bg="white"
+              borderRadius="md"
+              shadow={2}
+              p={2}
+              mt={2}
+              borderColor="gray.300"
+              borderWidth={1}
+            >
+              <Input
+                placeholder={`Masukkan Kode Tiket`}
+                onChangeText={(text) => handleTicketCodeChange(text, index)}
+                value={code}
+              />
+            </Box>
+          ))}
+        </VStack>
+        <Button
+          onPress={handleActionButtonPress}
+          bg={'#e81c4c'}
+          borderRadius={'full'}
+          mt={4}
+        >
+          Kirim
+        </Button>
       </Box>
     </NativeBaseProvider>
   );
 }
+
+
+const styles = StyleSheet.create({
+  centerText: {
+    flex: 1,
+    fontSize: 18,
+    padding: 24,
+    color: "#777",
+  },
+  textBold: {
+    fontWeight: "500",
+    color: "#777",
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "rgb(0,122,255)",
+  },
+  buttonTouchable: {
+    padding: 16,
+  },
+});

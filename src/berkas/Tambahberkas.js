@@ -21,6 +21,7 @@ import {
   Toast,
   VStack,
   WarningOutlineIcon,
+  CheckCircleIcon,
 } from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
@@ -47,9 +48,11 @@ import DatePicker from 'react-native-date-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DocumentPicker from 'react-native-document-picker';
 import Header from '../common/Header';
+// import { Icon, Text } from 'react-native-elements';
 
 export default function Tambahberkas({route, navigation}) {
 	const {conf, user} = route.params;
+	const [isSubmissionSuccess, setIsSubmissionSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nama, setNama] = useState("");
 	const [agenda, setAgenda] = useState("");
@@ -106,6 +109,14 @@ export default function Tambahberkas({route, navigation}) {
 		}
 	};
 
+	const formatDate = (date) => {
+		const options = { day: 'numeric', month: 'long', year: 'numeric' };
+		return date ? date.toLocaleDateString('en-US', options) : 'Pilih Tanggal';
+	  };
+	const handleAlertButtonPress = () => {
+		  // Navigate to the "Daftar Berkas" screen
+		  navigation.navigate('Tambahberkasberhasil'); // Assuming the screen name is 'DaftarBerkas'
+		};
 	const handleSimpanBerkas = async () => {
 		const formData = new FormData();
     
@@ -150,17 +161,36 @@ export default function Tambahberkas({route, navigation}) {
 				headers
 			);
       
-      if (response.data.code === 200) {
-        setLoading(true)
-        Alert.alert(response.data.message + ' Tiket ID: ' + response.data.tiket_id);
-        console.log("Response", response.data);
+			if (response.data.code === 200) {
+        setLoading(true);
+        setIsSubmissionSuccess(true);
+        Alert.alert(
+          'Berkas berhasil ditambahkan',
+          'Tiket ID: ' + response.data.tiket_id,
+		  
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+				navigation.navigate('Tambahberkasberhasil');
+              },
+            },
+          ],
+          { cancelable: false } // To prevent dismissal by tapping outside of the alert
+        );
+        console.log('Response', response.data);
       } else {
-        Alert.alert("Error: ", response.data.message)
+        Alert.alert('Error: ', response.data.message);
       }
-		} catch (error) {
-			console.error("Error", error);
-		}
+    } catch (error) {
+      console.error('Error', error);
+    }
 	};
+
+   
+
+	
+	  
 
 	return (
 		<NativeBaseProvider>
@@ -201,44 +231,38 @@ export default function Tambahberkas({route, navigation}) {
 					onChangeText={setUraian}
 				/>
 
-				<Text>Tanggal Diterima</Text>
-				<Pressable style={styles.buttonDate} onPress={toggleTanggalDiterima}>
-					<Text style={styles.buttonText}>
-						{tanggalDiterima
-							? tanggalDiterima.toLocaleDateString()
-							: "Pilih Tanggal"}
-					</Text>
-				</Pressable>
-				<DateTimePickerModal
-					isVisible={tanggalDiterimaVisible}
-					mode="date"
-					onConfirm={confirmTanggalDiterima}
-					onCancel={toggleTanggalDiterima}
-				/>
+<Text>Tanggal Diterima</Text>
+      <Pressable style={styles.buttonDate} onPress={toggleTanggalDiterima}>
+        <Text style={styles.buttonText}>
+          {formatDate(tanggalDiterima)}
+        </Text>
+      </Pressable>
+      <DateTimePickerModal
+        isVisible={tanggalDiterimaVisible}
+        mode="date"
+        onConfirm={confirmTanggalDiterima}
+        onCancel={toggleTanggalDiterima}
+      />
 
-				<Text>Tanggal Dokumen</Text>
-				<Pressable style={styles.buttonDate} onPress={toggleTanggalDokumen}>
-					<Text style={styles.buttonText}>
-						{tanggalDokumen
-							? tanggalDokumen.toLocaleDateString()
-							: "Pilih Tanggal"}
-					</Text>
-				</Pressable>
-				<DateTimePickerModal
-					isVisible={tanggalDokumenVisible}
-					mode="date"
-					onConfirm={confirmTanggalDokumen}
-					onCancel={toggleTanggalDokumen}
-				/>
+      <Text>Tanggal Dokumen</Text>
+      <Pressable style={styles.buttonDate} onPress={toggleTanggalDokumen}>
+        <Text style={styles.buttonText}>
+          {formatDate(tanggalDokumen)}
+        </Text>
+      </Pressable>
+      <DateTimePickerModal
+        isVisible={tanggalDokumenVisible}
+        mode="date"
+        onConfirm={confirmTanggalDokumen}
+        onCancel={toggleTanggalDokumen}
+      />
 
-				<Text>Tanggal Agenda</Text>
-				<Pressable style={styles.buttonDate} onPress={toggleTanggalAgenda}>
-					<Text style={styles.buttonText}>
-						{tanggalAgenda
-							? tanggalAgenda.toLocaleDateString()
-							: "Pilih Tanggal"}
-					</Text>
-				</Pressable>
+      <Text>Tanggal Agenda</Text>
+      <Pressable style={styles.buttonDate} onPress={toggleTanggalAgenda}>
+        <Text style={styles.buttonText}>
+          {formatDate(tanggalAgenda)}
+        </Text>
+      </Pressable>
 				<DateTimePickerModal
 					isVisible={tanggalAgendaVisible}
 					mode="date"
@@ -246,7 +270,7 @@ export default function Tambahberkas({route, navigation}) {
 					onCancel={toggleTanggalAgenda}
 				/>
 
-				<Text>Attachment Dokumen</Text>
+				<Text>Lampiran Dokumen</Text>
 				<Pressable style={styles.buttonDate} onPress={handleFilePick}>
 					<Text style={styles.buttonText}>
           				{dokumen
@@ -256,9 +280,13 @@ export default function Tambahberkas({route, navigation}) {
 					</Text>
 				</Pressable>
 
+				
+
+
 				<Pressable style={styles.buttonSimpan} onPress={handleSimpanBerkas}>
 					<Text style={styles.buttonText}>Simpan</Text>
 				</Pressable>
+
 			</View>
 		</ScrollView>
     </Box>
@@ -315,4 +343,14 @@ const styles = StyleSheet.create({
 		letterSpacing: 0.25,
 		color: "white",
 	},
+	buttonLihatDaftar: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		paddingVertical: 12,
+		paddingHorizontal: 32,
+		borderRadius: 50,
+		elevation: 3,
+		backgroundColor: '#4CAF50', // Green color, you can change it
+		marginTop: 20,
+	  },
 });

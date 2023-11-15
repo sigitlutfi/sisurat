@@ -37,6 +37,7 @@
     "react-native-charts-wrapper": "^0.5.11",
     "react-native-date-picker": "^4.3.3",
     "react-native-document-picker": "^9.0.1",
+    "react-native-elements": "^3.4.3",
     "react-native-image-picker": "^7.0.1",
     "react-native-image-slider-banner": "^1.0.3",
     "react-native-load-more-flatlist": "^1.0.1",

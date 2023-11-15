@@ -54,6 +54,9 @@ import Scanfile from './src/berkas/Scanfile';
 import Kodetiket from './src/berkas/Kodetiket';
 import Listdisposisi from './src/berkas/Listdisposisi';
 import History from './src/berkas/History';
+import Detailberkas from './src/berkas/Detailberkas';
+import Tambahberkasberhasil from './src/berkas/Tambahberkasberhasil';
+import Disposisiberhasil from './src/berkas/Disposisiberhasil';
 
 import {PERMISSIONS, checkMultiple, check} from 'react-native-permissions';
 
@@ -595,6 +598,21 @@ export default function App({navigation}) {
               <Stack.Screen
                 name="History"
                 component={History}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="Detailberkas"
+                component={Detailberkas}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="Tambahberkasberhasil"
+                component={Tambahberkasberhasil}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="Disposisiberhasil"
+                component={Disposisiberhasil}
                 initialParams={{conf: state.conf, user: state.userData}}
               />
 

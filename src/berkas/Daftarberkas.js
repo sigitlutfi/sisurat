@@ -42,6 +42,7 @@ import moment from 'moment';
 import 'moment/locale/id';
 import MonthPicker from 'react-native-month-year-picker';
 import Header from '../common/Header';
+import { useNavigation } from '@react-navigation/native';
 
 moment.locale('id');
 
@@ -155,66 +156,6 @@ export default function Daftarberkas({route, navigation}) {
         </Actionsheet.Content>
       </Actionsheet>
 
-    {mdetail && (
-    <Modal isOpen={mdetail} onClose={() => setMdetail(false)}>
-      <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>Detail Berkas</Modal.Header>
-          <Modal.Body>
-            {detailData && (
-              <VStack space={2}>
-                <HStack>
-                  <Text bold>Nama Dokumen: </Text>
-                </HStack>
-                <Text>{detailData.nama_dokumen}</Text>
-                <HStack>
-                  <Text bold>Agenda: </Text>
-                  <Text>{detailData.agenda}</Text>
-                </HStack>
-                <HStack>
-                  <Text bold>Nama Pengirim: </Text>
-                  <Text>{detailData.nama_pengirim}</Text>
-                </HStack>
-                <HStack>
-                  <Text bold>Perihal: </Text>
-                  <Text>{detailData.perihal}</Text>
-                </HStack>
-                <HStack>
-                  <Text bold>Ringkasan Dokumen: </Text>
-                </HStack>
-                <Text>{detailData.ringkasan_dokumen}</Text>
-                <HStack>
-                  <Text bold>Tanggal Diterima: </Text>
-                  <Text>{formatTanggal(detailData.tanggal_diterima)}</Text>
-                </HStack>
-                <HStack>
-                  <Text bold>Tanggal Dokumen: </Text>
-                  <Text>{formatTanggal(detailData.tanggal_dokumen)}</Text>
-                </HStack>
-                <HStack>
-                  <Text bold>Tanggal Agenda: </Text>
-                  <Text>{formatTanggal(detailData.tanggal_agenda || 'Tidak ada')}</Text>
-                </HStack>
-                <HStack>
-                  <Text bold>Lampiran: </Text>
-                  <Text color={'blue.500'}>
-                    <Link href={detailData.lampiran.path} isExternal>
-                      Download Berkas
-                    </Link>
-                  </Text>
-                </HStack>
-                <Button 
-                  onPress={() => setMdetail(false)}
-                  bg={conf.color}
-                  >Tutup</Button>
-              </VStack>
-            )}
-          </Modal.Body>
-      </Modal.Content>
-    </Modal>
-    )}
-
-
       {show && (
         <MonthPicker
           // eslint-disable-next-line no-undef
@@ -228,28 +169,17 @@ export default function Daftarberkas({route, navigation}) {
       )}
 
       <Header tit="Daftar Berkas" nv={navigation} conf={conf} />
+      <Box mt={4} px={4}>
+            <Button
+              borderRadius={'full'}
+              bg={conf.color}
+              onPress={() => setAs(true)}
+            >
+              FILTER
+            </Button>
+          </Box>
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <Box p={4} bg={'white'} borderRadius={'3xl'}>
-          <HStack space={4}>
-            <Input flex={1} variant={'rounded'} />
-            <Pressable w={12} h={12}>
-              <Center flex={1} bg={conf.color} borderRadius={'full'}>
-                <Icon
-                  color="white"
-                  size={6}
-                  as={MaterialCommunityIcons}
-                  name="magnify"
-                />
-              </Center>
-            </Pressable>
-          </HStack>
-          <Button
-            borderRadius={'full'}
-            marginTop={4}
-            bg={conf.color}
-            onPress={() => setAs(true)}>
-            FILTER
-          </Button>
 
           <ScrollView horizontal mt={4}>
             {filter.tanggal !== null && (
@@ -306,7 +236,11 @@ export default function Daftarberkas({route, navigation}) {
           <FlatList
             data={data}
             renderItem={({item, index}) => (
-              <Pressable px={4} onPress={() => showDetail(item)} key={index}>
+              <Pressable
+  px={4}
+  onPress={() => navigation.navigate('Detailberkas', { item })}
+  key={index}
+>
                 <HStack justifyContent={'space-between'}>
                   <Stack flex={1}>
                     <Heading>{item.nama_dokumen + index}</Heading>
@@ -324,10 +258,12 @@ export default function Daftarberkas({route, navigation}) {
                         <Text>: {item.agenda}</Text>
                       </HStack>
                       
-                      <HStack spacing={4}>
-                      <Button marginTop={4} marginRight={2}
+                      <HStack justifyContent={'space-between'} alignItems={'center'}>
+
+                    <HStack>
+                    <Button marginTop={4} marginRight={2}
                       bg={'cyan.800'}
-                      py={1}
+                      // py={1}
                       borderRadius={'full'}
                       onPress={() => {
                         navigation.navigate('History'); 
@@ -342,7 +278,7 @@ export default function Daftarberkas({route, navigation}) {
 
                     <Button marginTop={4}
                       bg={'cyan.600'}
-                      py={1}
+                      // py={1}
                       borderRadius={'full'}
                       onPress={() => {
                         navigation.navigate('Listdisposisi'); 
@@ -354,6 +290,8 @@ export default function Daftarberkas({route, navigation}) {
                         color="white"
                       />
                     </Button>
+                    </HStack>
+                    <Text>{item.tiket_id}</Text>
                     </HStack>
 
                       </Stack>
