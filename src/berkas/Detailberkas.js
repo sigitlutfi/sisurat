@@ -113,15 +113,31 @@ export default function Detailberkas({ route, navigation }) {
       <ScrollView>
         <Box bg={'gray.200'} flex={1} px={4} pb={4} mt={4}>
           <VStack space={2} alignItems="flex-start">
-            <Text bold>Nama Dokumen: {item.nama_dokumen}</Text>
-            <Text bold>Agenda: {item.agenda}</Text>
-            <Text bold>Nama Pengirim: {item.nama_pengirim}</Text>
-            <Text bold>Perihal: {item.perihal}</Text>
-            <Text bold>Ringkasan Dokumen: {item.ringkasan_dokumen}</Text>
-            <Text bold>Tanggal Diterima: {formatTanggal(item.tanggal_diterima)}</Text>
-            <Text bold>Tanggal Dokumen: {formatTanggal(item.tanggal_dokumen)}</Text>
-            <Text bold>Tanggal Agenda: {formatTanggal(item.tanggal_agenda)}</Text>
-            <Text bold>Lampiran: {item.lampiran}</Text>
+            {[
+              { label: 'Nama Dokumen', value: item.nama_dokumen, divider: ':' },
+              { label: 'Agenda', value: item.agenda, divider: ':' },
+              { label: 'Nama Pengirim', value: item.nama_pengirim, divider: ':' },
+              { label: 'Perihal', value: item.perihal, divider: ':' },
+              { label: 'Ringkasan Dokumen', value: item.ringkasan_dokumen, divider: ':' },
+              { label: 'Tanggal Diterima', value: formatTanggal(item.tanggal_diterima), divider: ':' },
+              { label: 'Tanggal Dokumen', value: formatTanggal(item.tanggal_dokumen) , divider: ':'},
+              { label: 'Tanggal Agenda', value: formatTanggal(item.tanggal_agenda), divider: ':' },
+              {
+                label: 'Lampiran',
+                value: (
+                  <TouchableOpacity onPress={() => openAttachment(item.lampiran)}>
+                    <Text bold>{item.lampiran}</Text>
+                  </TouchableOpacity>
+                ),
+                divider: ':'
+              },
+            ].map((item, index) => (
+              <HStack key={index} width="100%">
+                <Text bold width={'40%'}>{item.label}</Text>
+                <Text bold width={'5%'}>{item.divider}</Text>
+                <Text maxWidth={'55%'}>{item.value}</Text>
+              </HStack>
+            ))}
             <Divider my={2} />
           </VStack>
         </Box>

@@ -50,6 +50,7 @@ export default function Daftarberkas({route, navigation}) {
   const {conf, user} = route.params;
   const {signOut} = React.useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [dataBerkas, setDataBerkas ] = useState([]);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mdetail, setMdetail] = useState(false);
@@ -59,7 +60,7 @@ export default function Daftarberkas({route, navigation}) {
   const [detailData, setDetailData] = useState(null);
   const [filter, setFilter] = useState({
     tanggal: null,
-    berkas: null,
+    nama: null,
     status: null,
   });
   const [as, setAs] = useState(false);
@@ -85,6 +86,7 @@ export default function Daftarberkas({route, navigation}) {
       .then(v => {
         if (v.data.data != undefined) {
           setData(v.data.data);
+          setDataBerkas(response.data.data);
         }
         console.log(v);
       })
@@ -111,7 +113,7 @@ export default function Daftarberkas({route, navigation}) {
               Pilih tanggal
             </Button>
 
-            <Text mt={4}>Berkas</Text>
+            <Text mt={4}>Nama</Text>
             <Select
               minWidth="200"
               accessibilityLabel="Choose Service"
@@ -122,11 +124,12 @@ export default function Daftarberkas({route, navigation}) {
               mt={1}
               onValueChange={itemValue => {
                 const f = filter;
-                f.berkas = itemValue;
+                f.nama = itemValue;
                 setFilter(f);
               }}>
-              <Select.Item label="Semua berkas" value={1} />
-              <Select.Item label="Berkas saya" value={2} />
+              {dataBerkas.map((nama, index,) => (
+                <Select.Item key={index} label={dokumen.nama_dokumen} value={dokumen.nama_dokumen} />
+              ))}
             </Select>
             <Text mt={4}>Status berkas</Text>
             <Select
@@ -148,7 +151,7 @@ export default function Daftarberkas({route, navigation}) {
             </Select>
             <Button
               onPress={() =>
-                setFilter({tanggal: null, berkas: null, status: null})
+                setFilter({tanggal: null, nama: null, status: null})
               }>
               HAPUS FILTER
             </Button>
@@ -196,7 +199,7 @@ export default function Daftarberkas({route, navigation}) {
                 </Text>
               </Stack>
             )}
-            {filter.berkas !== null && (
+            {/* {filter.berkas !== null && (
               <Stack
                 alignItems={'center'}
                 space={2}
@@ -209,7 +212,7 @@ export default function Daftarberkas({route, navigation}) {
                   Berkas Saya
                 </Text>
               </Stack>
-            )}
+            )} */}
             {filter.status !== null && (
               <Stack
                 alignItems={'center'}
@@ -291,7 +294,7 @@ export default function Daftarberkas({route, navigation}) {
                       />
                     </Button>
                     </HStack>
-                    <Text>{item.tiket_id}</Text>
+                    <Text fontSize="xl" fontWeight="bold">{item.tiket_id}</Text>
                     </HStack>
 
                       </Stack>
@@ -300,21 +303,27 @@ export default function Daftarberkas({route, navigation}) {
                       <Center
                         w={12}
                         bg={
-                          item.status == 1
-                            ? 'green.600'
-                            : item.status == 2
-                            ? 'red.600'
-                            : 'orange.600'
+                          item.status === 1
+                            ? 'blue'
+                            : item.status === 2
+                            ? 'gray'
+                            : item.status === 3
+                            ? 'orange'  
+                            : 'green'
                         }
                         py={1}
-                        borderRadius={'full'}>
+                        borderRadius={'full'}
+                        borderWidth={0} 
+                        borderColor="transparent"  
+                        >
                         {item.status == 1 ? (
-        <Icon  as={MaterialCommunityIcons} name="check-all" Size={5} color="white" />
+        <Icon  as={MaterialCommunityIcons} name="check-all" Size={5} color="blue" />
       ) : item.status == 2 ? (
-        <Text fontSize={12} color="white">ARSIP</Text>
-      ) : (
-        <Icon as={MaterialCommunityIcons} name="check" Size={5} color="white" />
-      )}
+        <Icon  as={MaterialCommunityIcons} name="archive-lock-outline" Size={5} color="gray" />
+      ) : item.status === 3 ? (
+        <Icon as={MaterialCommunityIcons} name="check" size={5} color="green" />
+      ) : null}
+      
                       </Center>
                     </Stack>
                   </HStack>

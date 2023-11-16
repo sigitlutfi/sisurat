@@ -49,6 +49,9 @@ export default function Daftarberkas({ route, navigation }) {
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
   const [keterangan, setKeterangan] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [isNameFilled, setIsNameFilled] = useState(false);
+const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
+
 
   useEffect(() => {
     // Fetch disposisi data using Axios and set it in the 'data' state
@@ -86,10 +89,18 @@ export default function Daftarberkas({ route, navigation }) {
       setSelectedUsers(selectedUsers.filter((user) => user.id !== result.id));
     }
     setShowSearchModal(false);
+    setIsNameFilled(true);
+  };
+  const handleKeteranganChange = (text) => {
+    setKeterangan(text);
+    setIsKeteranganFilled(!!text); 
   };
 
   const sendNotification = () => {
-    // Show confirmation popup
+    if (!selectedUsers.length || !keterangan) {
+      Alert.alert('Error', 'Harap isi nama dan keterangan sebelum mengirim disposisi.');
+      return;
+    }
     Alert.alert(
       'Konfirmasi',
       'Apakah Anda yakin ingin mendisposisikan berkas anda?',

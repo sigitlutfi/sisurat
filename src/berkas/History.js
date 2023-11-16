@@ -70,47 +70,40 @@ export default function Daftarberkas({ route, navigation }) {
       icon: 'check-circle',
     },
   ];
-  
-
-
   return (
     <NativeBaseProvider>
       <Header tit="History" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <Box>
-        {timelineData.map((item, index) => (
-  <View key={index}>
-    <Box flexDirection="row" alignItems="center">
-      <Box width={24}>
-        <Text>{moment(item.datetime).format('HH:mm')}</Text>
-        <Divider orientation="vertical" h={6} mx={2} borderColor="gray.400" />
-      </Box>
-      <Box flex={1}>
-        <Text fontSize="lg" fontWeight="bold">
-          {item.title}
-        </Text>
-        <Text>{item.description}</Text>
-      </Box>
-      <Box>
-        <MaterialCommunityIcons
-          name={item.icon}
-          size={24}
-          color={item.status === 'Selesai' ? 'green' : 'blue'}
-        />
-      </Box>
-    </Box>
-    <Box flexDirection="row" alignItems="center">
-      <Box width={24} />
-      <Box flex={1}>
-        <Text>{moment(item.datetime).format('YYYY-MM-DD')}</Text>
-      </Box>
-    </Box>
-    {index < timelineData.length - 1 && (
-      <Divider my={2} borderColor="gray.400" />
-    )}
-  </View>
-))}
-
+          {timelineData.map((item, index) => (
+            <View key={index}>
+              <Box flexDirection="row" alignItems="center">
+                <Box width={24}>
+                  <Text>{moment(item.datetime).format('HH:mm')}</Text>
+                  <Divider orientation="vertical" h={6} mx={2} borderColor="gray.400" />
+                </Box>
+                <Box flexDirection="row" alignItems="center" flex={1}>
+                  <Avatar
+                    size="xl"
+                    source={{
+                      uri: user.profilePicture,
+                    }}
+                  />
+                  <Box ml={2}>
+                    <Text fontSize="lg" fontWeight="bold">
+                      {user.name}
+                    </Text>
+                    <Text fontSize="sm">{moment(item.datetime).format('DD MMMM YYYY')}</Text>
+                    <Text>{item.status}</Text>
+                  </Box>
+                </Box>
+              </Box>
+              <Box flexDirection="row" alignItems="center" mt={2}>
+                <Box width={24} />
+              </Box>
+              {index < timelineData.length - 1 && <Divider my={2} borderColor="gray.400" />}
+            </View>
+          ))}
         </Box>
       </Box>
     </NativeBaseProvider>
