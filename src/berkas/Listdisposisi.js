@@ -126,6 +126,16 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
       <Header tit="Disposisi" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <Box p={4} bg={'white'} borderRadius={'3xl'}>
+        <Box bg="gray.100" p={4} borderRadius={8}>
+            <Text fontWeight="bold" mb={2}>
+              Pilih Nama
+            </Text>
+            {selectedUsers.map((user) => (
+              <Text key={user.id} fontWeight="bold" fontSize={24} mb={2}>
+                {user.username}
+              </Text>
+            ))}
+          </Box>
           <HStack space={4}>
             <Select
               flex={1}
@@ -147,16 +157,7 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
               ))}
             </Select>
           </HStack>
-          <Box bg="gray.100" p={4} borderRadius={8}>
-            <Text fontWeight="bold" mb={2}>
-              Pilih Nama
-            </Text>
-            {selectedUsers.map((user) => (
-              <Text key={user.id} fontWeight="bold" fontSize={24} mb={2}>
-                {user.username}
-              </Text>
-            ))}
-          </Box>
+          
           <Box bg="gray.100" p={4} borderRadius={8}>
             <Text fontWeight="bold" mb={2}>
               Keterangan

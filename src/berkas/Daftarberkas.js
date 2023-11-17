@@ -86,7 +86,6 @@ export default function Daftarberkas({route, navigation}) {
       .then(v => {
         if (v.data.data != undefined) {
           setData(v.data.data);
-          setDataBerkas(response.data.data);
         }
         console.log(v);
       })
@@ -122,13 +121,13 @@ export default function Daftarberkas({route, navigation}) {
                 endIcon: <CheckIcon size="5" />,
               }}
               mt={1}
-              onValueChange={itemValue => {
+              onValueChange={(itemValue, itemIndex) => {
                 const f = filter;
                 f.nama = itemValue;
                 setFilter(f);
               }}>
-              {dataBerkas.map((nama, index,) => (
-                <Select.Item key={index} label={dokumen.nama_dokumen} value={dokumen.nama_dokumen} />
+              {data.map((item, index) => (
+                <Select.Item key={index} label={ item.nama_dokumen} value={item.nama_dokumen}/>
               ))}
             </Select>
             <Text mt={4}>Status berkas</Text>
@@ -199,7 +198,7 @@ export default function Daftarberkas({route, navigation}) {
                 </Text>
               </Stack>
             )}
-            {/* {filter.berkas !== null && (
+            {filter.nama !== null && (
               <Stack
                 alignItems={'center'}
                 space={2}
@@ -209,10 +208,10 @@ export default function Daftarberkas({route, navigation}) {
                 px={4}
                 py={2}>
                 <Text color={'white'} bold>
-                  Berkas Saya
+                  Nama
                 </Text>
               </Stack>
-            )} */}
+            )}
             {filter.status !== null && (
               <Stack
                 alignItems={'center'}
