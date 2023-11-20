@@ -98,7 +98,7 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
 
   const sendNotification = () => {
     if (!selectedUsers.length || !keterangan) {
-      Alert.alert('Error', 'Harap isi nama dan keterangan sebelum mengirim disposisi.');
+      Alert.alert('Info', 'Harap isi nama dan keterangan sebelum mengirim disposisi.');
       return;
     }
     Alert.alert(

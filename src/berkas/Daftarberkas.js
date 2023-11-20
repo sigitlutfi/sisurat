@@ -43,6 +43,7 @@ import 'moment/locale/id';
 import MonthPicker from 'react-native-month-year-picker';
 import Header from '../common/Header';
 import { useNavigation } from '@react-navigation/native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 moment.locale('id');
 
@@ -58,6 +59,8 @@ export default function Daftarberkas({route, navigation}) {
   const showPicker = useCallback(value => setShow(value), []);
   const [filtershow, setFiltershow] = useState(true);
   const [detailData, setDetailData] = useState(null);
+  const [selectedName, setSelectedName] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [filter, setFilter] = useState({
     tanggal: null,
     nama: null,
@@ -65,6 +68,15 @@ export default function Daftarberkas({route, navigation}) {
   });
   const [as, setAs] = useState(false);
   const [dataas, setDataas] = useState(null);
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const handleConfirm = (date) => {
+    setDatePickerVisibility(false);
+    setSelectedDate(date);
+    const f = filter;
+    f.tanggal = moment(date).format('DD MM YYYY'); 
+    setFilter(f);
+  };
 
   const showDetail = item => {
     setDetailData(item);
@@ -103,14 +115,9 @@ export default function Daftarberkas({route, navigation}) {
           <Stack w={'full'} px={4} pb={12}>
             <Heading>Filter</Heading>
             <Text mt={6}>Tanggal</Text>
-            <Button
-              onPress={() => {
-                const f = filter;
-                f.tanggal = '11 12 2023';
-                setFilter(f);
-              }}>
-              Pilih tanggal
-            </Button>
+            <Button onPress={() => setDatePickerVisibility(true)}>
+        Pilih tanggal
+      </Button>
 
             <Text mt={4}>Nama</Text>
             <Select
@@ -124,6 +131,7 @@ export default function Daftarberkas({route, navigation}) {
               onValueChange={(itemValue, itemIndex) => {
                 const f = filter;
                 f.nama = itemValue;
+                setSelectedName(itemValue);
                 setFilter(f);
               }}>
               {data.map((item, index) => (
@@ -158,15 +166,12 @@ export default function Daftarberkas({route, navigation}) {
         </Actionsheet.Content>
       </Actionsheet>
 
-      {show && (
-        <MonthPicker
-          // eslint-disable-next-line no-undef
-          onChange={onValueChange}
-          value={date}
-          maximumDate={new Date()}
-          cancelButton="Batal"
-          okButton="Ok"
-          locale="id"
+      {isDatePickerVisible && (
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={() => setDatePickerVisibility(false)}
         />
       )}
 
@@ -194,7 +199,7 @@ export default function Daftarberkas({route, navigation}) {
                 px={4}
                 py={2}>
                 <Text color={'white'} bold>
-                  11 12 2023
+                {moment(selectedDate).format('DD MM YYYY')} 
                 </Text>
               </Stack>
             )}
@@ -208,7 +213,7 @@ export default function Daftarberkas({route, navigation}) {
                 px={4}
                 py={2}>
                 <Text color={'white'} bold>
-                  Nama
+                {selectedName}
                 </Text>
               </Stack>
             )}
@@ -222,7 +227,7 @@ export default function Daftarberkas({route, navigation}) {
                 px={4}
                 py={2}>
                 <Text color={'white'} bold>
-                  Dibaca
+                {filter.status === 1 ? 'Dibaca' : filter.status === 2 ? 'Arsip' : 'Belumdibaca'}
                 </Text>
               </Stack>
             )}
@@ -237,12 +242,13 @@ export default function Daftarberkas({route, navigation}) {
           </HStack>
           <FlatList
             data={data}
+            // data={data.filter((item) => filter.status === null || item.status === filter.status)}
             renderItem={({item, index}) => (
               <Pressable
-  px={4}
-  onPress={() => navigation.navigate('Detailberkas', { item })}
-  key={index}
->
+                px={4}
+                onPress={() => navigation.navigate('Detailberkas', { item })}
+                key={index}
+              >
                 <HStack justifyContent={'space-between'}>
                   <Stack flex={1}>
                     <Heading>{item.nama_dokumen + index}</Heading>
@@ -313,15 +319,15 @@ export default function Daftarberkas({route, navigation}) {
                         py={1}
                         borderRadius={'full'}
                         borderWidth={0} 
-                        borderColor="transparent"  
+                        borderColor="transparent" 
                         >
                         {item.status == 1 ? (
-        <Icon  as={MaterialCommunityIcons} name="check-all" Size={5} color="blue" />
-      ) : item.status == 2 ? (
-        <Icon  as={MaterialCommunityIcons} name="archive-lock-outline" Size={5} color="gray" />
-      ) : item.status === 3 ? (
-        <Icon as={MaterialCommunityIcons} name="check" size={5} color="green" />
-      ) : null}
+                            <Icon  as={MaterialCommunityIcons} name="check-all" Size={5} color="blue" />
+                          ) : item.status == 2 ? (
+                            <Icon  as={MaterialCommunityIcons} name="archive-lock-outline" Size={5} color="gray" />
+                          ) : item.status === 3 ? (
+                            <Icon as={MaterialCommunityIcons} name="check" size={5} color="green" />
+                          ) : null}
       
                       </Center>
                     </Stack>
