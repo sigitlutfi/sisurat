@@ -36,40 +36,55 @@ import DocumentPicker from 'react-native-document-picker';
 
 moment.locale('id');
 
+
 export default function Daftarberkas({ route, navigation }) {
-  const { conf, user } = route.params;
+  const { conf, user, tiket_id } = route.params;
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    // Fetch disposisi data using Axios and set it in the 'data' state
+    axios({
+      method: 'get',
+      url: 'http://103.100.27.59/~lacaksurat/get_history_surat.php',
+      headers: {
+        tiket_id: tiket_id,
+      },
+    })
+      .then((response) => { console.log(response)
+        if (response.data.data !== undefined) {
+          setData(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const timelineData = [
     {
       datetime: '2023-11-06T09:00:00',
       title: 'Dokumen Diterima',
-      description: 'Oleh Pihak Resepsionis',
       status: 'Diterima',
-      icon: 'check-circle',
     },
     {
       datetime: '2023-11-06T10:45:00',
       title: 'Dokumen Sedang Ditangan',
-      description: 'Oleh Mas X',
       status: 'Dalam Pegangan',
-      icon: 'check-circle',
     },
     {
       datetime: '2023-11-07T12:00:00',
       title: 'Dokumen Sedang Ditangan',
-      description: 'Oleh Mas Y',
       status: 'Dalam Pegangan',
-      icon: 'check-circle',
     },
     {
       datetime: '2023-11-07T14:00:00',
       title: 'Dokumen Sedang Ditangan',
-      description: 'Oleh Mas Z',
       status: 'Selesai',
-      icon: 'check-circle',
     },
   ];
+
+  
+
   return (
     <NativeBaseProvider>
       <Header tit="History" nv={navigation} conf={conf} />
@@ -93,8 +108,16 @@ export default function Daftarberkas({ route, navigation }) {
                     <Text fontSize="lg" fontWeight="bold">
                       {user.name}
                     </Text>
-                    <Text fontSize="sm">{moment(item.datetime).format('DD MMMM YYYY')}</Text>
-                    <Text>{item.status}</Text>
+                    <Text fontSize="sm">{moment(item.waktu_terima).format('DD MMMM YYYY')}</Text>
+                    <Text>ID History: {item.id_history}</Text>
+                    <Text>ID Surat: {item.id_surat}</Text>
+                    <Text>Tiket ID: {item.tiket_id}</Text>
+                    <Text>ID Pegawai Form: {item.id_pegawai_form}</Text>
+                    <Text>Nama Pegawai Form: {item.nama_pegawai_form}</Text>
+                    <Text>ID Pegawai: {item.id_pegawai}</Text>
+                    <Text>Nama Pegawai To: {item.nama_pegawai_to}</Text>
+                    <Text>Keterangan: {item.keterangan}</Text>
+                    <Text>Status: {item.status}</Text>
                   </Box>
                 </Box>
               </Box>

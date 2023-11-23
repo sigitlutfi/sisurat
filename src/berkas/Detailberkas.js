@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View,  FlatList, TouchableOpacity } from 'react-native';
+import { View,  FlatList, TouchableOpacity, Alert, } from 'react-native';
 import axios from 'axios';
 import {
   Actionsheet,
@@ -77,16 +77,27 @@ export default function Detailberkas({ route, navigation }) {
       }
     }
   };
-  const YourComponent = () => {
-    // Assuming mdetail, setMdetail, and detailData are defined in your component's state or props
-    const mdetail = true; // replace with your actual state
-    const setMdetail = () => {}; // replace with your actual state setter function
-    const detailData = {}; // replace with your actual data
   
-    const conf = {
-      color: 'your-color', // replace with your actual color
-    };
-  }
+
+  const handleArsipButton = () => {
+    // Display an alert when the "Arsip" button is pressed
+    Alert.alert(
+      'Konfirmasi',
+      'Apakah Anda yakin ingin mengarsipkan berkas ini?',
+      [
+        {
+          text: 'Tidak',
+          style: 'cancel',
+        },
+        {
+          text: 'Ya',
+          onPress: () => {
+            console.log('Berkas diarsipkan');
+          },
+        },
+      ],
+    );
+  };
 
   useEffect(() => {
     axios({
@@ -142,9 +153,10 @@ export default function Detailberkas({ route, navigation }) {
           </VStack>
         </Box>
         <Box px={4} pb={4}>
-          <HStack spacing={4}>
+          <HStack spacing={4} >
+          <VStack alignItems="center">
             <Button
-              marginTop={4}
+              marginTop={2}
               marginRight={2}
               bg={'cyan.800'}
               borderRadius={'full'}
@@ -153,15 +165,32 @@ export default function Detailberkas({ route, navigation }) {
               }}>
               <Icon name="history" as={MaterialCommunityIcons} size={5} color="white" />
             </Button>
+            <Text  fontWeight="bold"  marginTop={2}>History</Text>
+            </VStack>
+            <VStack alignItems="center">
             <Button
-              marginTop={4}
-              bg={'cyan.600'}
+              marginTop={2}
+              marginRight={2}
+              bg={'orange.600'}
               borderRadius={'full'}
               onPress={() => {
                 navigation.navigate('Listdisposisi');
               }}>
               <Icon name="file-send-outline" as={MaterialCommunityIcons} size={5} color="white" />
             </Button>
+            <Text  fontWeight="bold"  marginTop={2}>Disposisi</Text>
+            </VStack>
+            <VStack alignItems="center">
+            <Button
+              marginTop={2}
+              marginRight={2}
+              bg={'red.600'}
+              borderRadius={'full'}
+              onPress={handleArsipButton}>
+              <Icon name="archive-lock-outline" as={MaterialCommunityIcons} size={5} color="white" />
+            </Button>
+            <Text  fontWeight="bold"  marginTop={2}>Arsip</Text>
+            </VStack>
           </HStack>
         </Box>
       </ScrollView>

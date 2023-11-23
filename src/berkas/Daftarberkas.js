@@ -88,23 +88,30 @@ export default function Daftarberkas({route, navigation}) {
     return new Date(tanggal).toLocaleDateString('id-ID', options);
   }
   useEffect(() => {
-    axios({
-      method: 'get',
-      url: 'http://103.100.27.59/~lacaksurat/list_surat.php',
-      headers: {
-        id_pegawai: '1',
-      },
+    cek()
+  },[]);
+
+function cek() {
+  axios({
+    method: 'get',
+    url: 'http://103.100.27.59/~lacaksurat/list_surat.php',
+    headers: {
+    id_pegawai: '1',
+   
+  },
+  })
+    .then(v => {
+      console.log('a')
+      if (v.data.data != undefined) {
+        setData(v.data.data);
+      }
+      console.log(v);
     })
-      .then(v => {
-        if (v.data.data != undefined) {
-          setData(v.data.data);
-        }
-        console.log(v);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  });
+    .catch(e => {
+      console.log(e);
+    });
+}
+
   console.log(filter);
   return (
     <NativeBaseProvider>
@@ -274,7 +281,7 @@ export default function Daftarberkas({route, navigation}) {
                       // py={1}
                       borderRadius={'full'}
                       onPress={() => {
-                        navigation.navigate('History'); 
+                        navigation.navigate('History', {tiket_id:item.tiket_id}); 
                       }}>
                       <Icon
                         name="history" 
