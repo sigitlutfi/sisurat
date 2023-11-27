@@ -46,8 +46,8 @@ export default function Login({route, navigation}) {
   useEffect(() => {
     return () => {
       if (deb === 2) {
-        setUsername('123456');
-        setPassword('qwerty123');
+        setUsername('sulistyo');
+        setPassword('password123');
       }
     };
   }, [deb]);
@@ -116,6 +116,7 @@ export default function Login({route, navigation}) {
     }
     return false;
   };
+  
   async function signx(params) {
     await AsyncStorage.setItem(
       'userData',

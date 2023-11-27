@@ -66,13 +66,10 @@ export default function Detailberkas({ route, navigation }) {
       const result = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
       });
-      // Handle the picked document, e.g., update the state with the file information
       console.log(result);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        // Handle canceled action
       } else {
-        // Handle other errors
         console.error(err);
       }
     }
@@ -80,7 +77,6 @@ export default function Detailberkas({ route, navigation }) {
   
 
   const handleArsipButton = () => {
-    // Display an alert when the "Arsip" button is pressed
     Alert.alert(
       'Konfirmasi',
       'Apakah Anda yakin ingin mengarsipkan berkas ini?',
@@ -92,6 +88,7 @@ export default function Detailberkas({ route, navigation }) {
         {
           text: 'Ya',
           onPress: () => {
+            navigation.navigate('Arsipberhasil');
             console.log('Berkas diarsipkan');
           },
         },
@@ -161,7 +158,7 @@ export default function Detailberkas({ route, navigation }) {
               bg={'cyan.800'}
               borderRadius={'full'}
               onPress={() => {
-                navigation.navigate('History');
+                navigation.navigate('History' , {tiket_id:item.tiket_id});
               }}>
               <Icon name="history" as={MaterialCommunityIcons} size={5} color="white" />
             </Button>

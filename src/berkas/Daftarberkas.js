@@ -50,7 +50,7 @@ moment.locale('id');
 export default function Daftarberkas({route, navigation}) {
   const {conf, user} = route.params;
   const {signOut} = React.useContext(AuthContext);
-  const [data, setData] = useState([]);
+  const [data, setData, ] = useState([]);
   const [dataBerkas, setDataBerkas ] = useState([]);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -111,6 +111,7 @@ function cek() {
       console.log(e);
     });
 }
+
 
   console.log(filter);
   return (
@@ -249,7 +250,19 @@ function cek() {
           </HStack>
           <FlatList
             data={data}
-            // data={data.filter((item) => filter.status === null || item.status === filter.status)}
+            // data={data.filter((item) => filter.status === 1 || item.status === filter.status)}
+
+            // data={data.filter((item) => {
+            //   if (
+            //     (filter.tanggal === null || moment(item.tanggal_diterima).isSame(filter.tanggal, 'day')) &&
+            //     (filter.nama === null || item.nama_dokumen === filter.nama) &&
+            //     (filter.status === null || item.status === filter.status)
+            //   ) {
+            //     return true;
+            //   }
+            //   return false;
+            // })}
+            
             renderItem={({item, index}) => (
               <Pressable
                 px={4}

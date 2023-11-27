@@ -60,41 +60,19 @@ export default function Daftarberkas({ route, navigation }) {
       });
   }, []);
 
-  const timelineData = [
-    {
-      datetime: '2023-11-06T09:00:00',
-      title: 'Dokumen Diterima',
-      status: 'Diterima',
-    },
-    {
-      datetime: '2023-11-06T10:45:00',
-      title: 'Dokumen Sedang Ditangan',
-      status: 'Dalam Pegangan',
-    },
-    {
-      datetime: '2023-11-07T12:00:00',
-      title: 'Dokumen Sedang Ditangan',
-      status: 'Dalam Pegangan',
-    },
-    {
-      datetime: '2023-11-07T14:00:00',
-      title: 'Dokumen Sedang Ditangan',
-      status: 'Selesai',
-    },
-  ];
-
-  
 
   return (
     <NativeBaseProvider>
       <Header tit="History" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <Box>
-          {timelineData.map((item, index) => (
+          <ScrollView>
+          {data.map((item, index) => (
             <View key={index}>
               <Box flexDirection="row" alignItems="center">
                 <Box width={24}>
                   <Text>{moment(item.datetime).format('HH:mm')}</Text>
+                  <Text fontSize="sm">{moment(item.waktu_terima).format('DD MMMM YYYY')}</Text>
                   <Divider orientation="vertical" h={6} mx={2} borderColor="gray.400" />
                 </Box>
                 <Box flexDirection="row" alignItems="center" flex={1}>
@@ -105,28 +83,20 @@ export default function Daftarberkas({ route, navigation }) {
                     }}
                   />
                   <Box ml={2}>
-                    <Text fontSize="lg" fontWeight="bold">
-                      {user.name}
-                    </Text>
-                    <Text fontSize="sm">{moment(item.waktu_terima).format('DD MMMM YYYY')}</Text>
-                    <Text>ID History: {item.id_history}</Text>
-                    <Text>ID Surat: {item.id_surat}</Text>
-                    <Text>Tiket ID: {item.tiket_id}</Text>
-                    <Text>ID Pegawai Form: {item.id_pegawai_form}</Text>
-                    <Text>Nama Pegawai Form: {item.nama_pegawai_form}</Text>
-                    <Text>ID Pegawai: {item.id_pegawai}</Text>
-                    <Text>Nama Pegawai To: {item.nama_pegawai_to}</Text>
+                    <Text>Disposisi dari: {item.nama_pegawai_form}</Text>
+                    <Text>Kepada: {item.nama_pegawai_to}</Text>
                     <Text>Keterangan: {item.keterangan}</Text>
-                    <Text>Status: {item.status}</Text>
+                    <Text>Status: {item.status==0?'BELUM DIBACA':item.status==1?'DIBACA':'DIARSIPKAN'}</Text>
                   </Box>
                 </Box>
               </Box>
               <Box flexDirection="row" alignItems="center" mt={2}>
                 <Box width={24} />
               </Box>
-              {index < timelineData.length - 1 && <Divider my={2} borderColor="gray.400" />}
+              {index < data.length - 1 && <Divider my={2}  />}
             </View>
           ))}
+          </ScrollView>
         </Box>
       </Box>
     </NativeBaseProvider>

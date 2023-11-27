@@ -57,6 +57,7 @@ import History from './src/berkas/History';
 import Detailberkas from './src/berkas/Detailberkas';
 import Tambahberkasberhasil from './src/berkas/Tambahberkasberhasil';
 import Disposisiberhasil from './src/berkas/Disposisiberhasil';
+import Arsipberhasil from './src/berkas/Arsipberhasil';
 
 import {PERMISSIONS, checkMultiple, check} from 'react-native-permissions';
 
@@ -145,12 +146,12 @@ export default function App({navigation}) {
   );
   const [loadconf, setLoadconf] = React.useState(true);
   React.useEffect(() => {
-    axios({method: 'GET', url: 'http://103.100.27.59/api/umum'})
+    axios({method: 'GET', url: 'http://103.100.27.59/~lacaksurat/svc_info.php'})
       .then(r => {
         console.log(r);
         const cr = r.data;
 
-        cr.url = 'http://103.100.27.59/api/';
+        cr.url = 'http://103.100.27.59/~lacaksurat/svc_auth.php';
         cr.color = '#e11d48';
         cr.name_app = r.data.nama_aplikasi;
         cr.subname_app = r.data.nama_singkat_aplikasi;
@@ -164,13 +165,13 @@ export default function App({navigation}) {
 
         setLoadconf(false);
         bootstrapAsync1({
-          url: 'http://103.100.27.59/api/',
-          name_app: 'Aplikasi Presensi (BETA)',
-          subname_app: 'Presensi',
+          url: 'http://103.100.27.59/~lacaksurat/svc_auth.php',
+          name_app: 'Aplikasi Tracking Surat (BETA)',
+          subname_app: 'Tracking surat',
           color: '#e11d48',
           icon: 'http://103.100.27.59/storage/gambar/logo/e7de10be-f01a-4b96-9921-59376b3b9f63.png',
           daerah: 'Global Intermedia',
-          deskripsi: 'Aplikasi untuk presensi',
+          deskripsi: 'Aplikasi untuk mengirim dan menyimpan berkas',
           koordinat: '-7.813111492789422, 110.37669583357997',
           today: 'Selasa, 17 Oktober 2023',
           icon: 'https://bnpp.go.id/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_bnpp.aa2af950.png&w=1920&q=75',
@@ -613,6 +614,11 @@ export default function App({navigation}) {
               <Stack.Screen
                 name="Disposisiberhasil"
                 component={Disposisiberhasil}
+                initialParams={{conf: state.conf, user: state.userData}}
+              />
+              <Stack.Screen
+                name="Arsipberhasil"
+                component={Arsipberhasil}
                 initialParams={{conf: state.conf, user: state.userData}}
               />
 

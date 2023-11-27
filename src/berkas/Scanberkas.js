@@ -27,7 +27,7 @@ import {
   VStack,
 } from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, Linking,StyleSheet, TouchableOpacity} from 'react-native';
+import {Dimensions, Linking,StyleSheet, TouchableOpacity, Alert,} from 'react-native';
 import AuthContext from '../../AuthContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ImageSlider} from 'react-native-image-slider-banner';
@@ -73,10 +73,27 @@ export default function Scanberkas({route, navigation}) {
     newCodes[index] = text;
     setTicketCodes(newCodes);
   };
+
   const handleActionButtonPress = () => {
-    // Add your custom action here
-    console.log('Action button pressed');
+    Alert.alert(
+      'Info',
+      'Apakah Anda ingin mengirim kode tiket Anda?',
+      [
+        {
+          text: 'Tidak',
+          style: 'cancel',
+        },
+        {
+          text: 'Ya',
+          onPress: () => {
+            console.log('Sending ticket codes:', ticketCodes);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
+
   return (
     <NativeBaseProvider>
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
