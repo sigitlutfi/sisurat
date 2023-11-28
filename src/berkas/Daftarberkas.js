@@ -42,7 +42,7 @@ import moment from 'moment';
 import 'moment/locale/id';
 import MonthPicker from 'react-native-month-year-picker';
 import Header from '../common/Header';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 moment.locale('id');
@@ -50,8 +50,9 @@ moment.locale('id');
 export default function Daftarberkas({route, navigation}) {
   const {conf, user} = route.params;
   const {signOut} = React.useContext(AuthContext);
-  const [data, setData, ] = useState([]);
-  const [dataBerkas, setDataBerkas ] = useState([]);
+  const [data, setData] = useState([]);
+  const [datadp, setDatadp] = useState([]);
+  const [dataBerkas, setDataBerkas] = useState([]);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mdetail, setMdetail] = useState(false);
@@ -70,11 +71,11 @@ export default function Daftarberkas({route, navigation}) {
   const [dataas, setDataas] = useState(null);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const handleConfirm = (date) => {
+  const handleConfirm = date => {
     setDatePickerVisibility(false);
     setSelectedDate(date);
     const f = filter;
-    f.tanggal = moment(date).format('DD MM YYYY'); 
+    f.tanggal = moment(date).format('DD MM YYYY');
     setFilter(f);
   };
 
@@ -84,39 +85,52 @@ export default function Daftarberkas({route, navigation}) {
   };
 
   function formatTanggal(tanggal) {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const options = {day: 'numeric', month: 'long', year: 'numeric'};
     return new Date(tanggal).toLocaleDateString('id-ID', options);
   }
   useEffect(() => {
-    cek()
-  },[]);
+    cek();
+  }, []);
 
-function cek() {
-  axios({
-    method: 'get',
-    url: 'http://103.100.27.59/~lacaksurat/list_surat.php',
-    headers: {
-    id_pegawai: '1',
-   
-  },
-  })
-    .then(v => {
-      console.log('a')
-      if (v.data.data != undefined) {
-        setData(v.data.data);
-      }
-      console.log(v);
+  function cek() {
+    axios({
+      method: 'get',
+      url: 'http://103.100.27.59/~lacaksurat/list_surat.php',
+      headers: {
+        id_pegawai: '1',
+      },
     })
-    .catch(e => {
-      console.log(e);
-    });
-}
+      .then(v => {
+        console.log('a');
+        if (v.data.data != undefined) {
+          setData(v.data.data);
+        }
+        console.log(v);
+      })
+      .catch(e => {
+        console.log(e);
+      });
 
+    axios({
+      method: 'get',
+      url: 'http://103.100.27.59/~lacaksurat/list_pegawai_disposisi.php',
+      headers: {
+        id_pegawai: '1',
+      },
+    })
+      .then(response => {
+        if (response.data.data !== undefined) {
+          setDatadp(response.data.data);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
   console.log(filter);
   return (
     <NativeBaseProvider>
-
       {/* Actionsheet untuk tampilan filter */}
       <Actionsheet isOpen={as} onClose={() => setAs(false)}>
         <Actionsheet.Content>
@@ -124,8 +138,8 @@ function cek() {
             <Heading>Filter</Heading>
             <Text mt={6}>Tanggal</Text>
             <Button onPress={() => setDatePickerVisibility(true)}>
-        Pilih tanggal
-      </Button>
+              Pilih tanggal
+            </Button>
 
             <Text mt={4}>Nama</Text>
             <Select
@@ -142,8 +156,8 @@ function cek() {
                 setSelectedName(itemValue);
                 setFilter(f);
               }}>
-              {data.map((item, index) => (
-                <Select.Item key={index} label={ item.nama_dokumen} value={item.nama_dokumen}/>
+              {datadp.map((item, index) => (
+                <Select.Item key={index} label={item.nama} value={item.nama} />
               ))}
             </Select>
             <Text mt={4}>Status berkas</Text>
@@ -183,66 +197,104 @@ function cek() {
         />
       )}
 
-      <Header tit="Daftar Berkas" nv={navigation} conf={conf} />
-      <Box mt={4} px={4}>
-            <Button
-              borderRadius={'full'}
-              bg={conf.color}
-              onPress={() => setAs(true)}
-            >
-              FILTER
-            </Button>
-          </Box>
-      <Box bg={'gray.200'} flex={1} px={4} pb={4}>
-        <Box p={4} bg={'white'} borderRadius={'3xl'}>
+      <Stack>
+        <Box bg={conf.color ? conf.color : 'red.400'}>
+          <HStack
+            px={4}
+            alignItems={'center'}
+            h={16}
+            justifyContent={'space-between'}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Icon
+                size={'2xl'}
+                color="white"
+                as={MaterialCommunityIcons}
+                name={'arrow-left'}
+              />
+            </TouchableOpacity>
 
-          <ScrollView horizontal mt={4}>
+            <Heading color={'white'} ml={4} maxWidth={300} numberOfLines={1}>
+              Daftar Berkas
+            </Heading>
+            <TouchableOpacity onPress={() => nv.goBack()} disabled>
+              <Icon
+                size={'2xl'}
+                color={conf.color}
+                as={MaterialCommunityIcons}
+                name={'arrow-left'}
+              />
+            </TouchableOpacity>
+          </HStack>
+          <Button
+            m={4}
+            borderRadius={'full'}
+            bg={'white'}
+            onPress={() => setAs(true)}>
+            <Text color={conf.color}>FILTER</Text>
+          </Button>
+          <ScrollView horizontal ml={4} mb={4}>
             {filter.tanggal !== null && (
-              <Stack
+              <Center
                 alignItems={'center'}
                 space={2}
                 mr={4}
-                bg={conf.color}
+                bg={'white'}
                 borderRadius={'full'}
                 px={4}
-                py={2}>
-                <Text color={'white'} bold>
-                {moment(selectedDate).format('DD MM YYYY')} 
+                py={1}>
+                <Text color={conf.color} fontSize={12} bold>
+                  {moment(selectedDate).format('DD MMMM YYYY')}
                 </Text>
-              </Stack>
+              </Center>
             )}
             {filter.nama !== null && (
-              <Stack
+              <Center
                 alignItems={'center'}
+                justifyContent={'center'}
                 space={2}
                 mr={4}
-                bg={conf.color}
+                bg={'white'}
                 borderRadius={'full'}
-                px={4}
-                py={2}>
-                <Text color={'white'} bold>
-                {selectedName}
+                px={2}
+                py={1}>
+                <Text color={conf.color} fontSize={12} bold>
+                  {selectedName}
                 </Text>
-              </Stack>
+              </Center>
             )}
             {filter.status !== null && (
-              <Stack
+              <Center
                 alignItems={'center'}
                 space={2}
                 mr={4}
-                bg={conf.color}
+                bg={'white'}
                 borderRadius={'full'}
-                px={4}
-                py={2}>
-                <Text color={'white'} bold>
-                {filter.status === 1 ? 'Dibaca' : filter.status === 2 ? 'Arsip' : 'Belumdibaca'}
+                px={2}
+                py={1}>
+                <Text color={conf.color} fontSize={12} bold>
+                  {filter.status === 1
+                    ? 'Dibaca'
+                    : filter.status === 2
+                    ? 'Arsip'
+                    : 'Belumdibaca'}
                 </Text>
-              </Stack>
+              </Center>
             )}
           </ScrollView>
         </Box>
 
-        <Box p={4} bg={'white'} borderRadius={'3xl'} flex={1} mt={4}>
+        <Box h={8} bg={conf.color} />
+        <Box h={8} bg={'gray.200'} mt={-8} borderTopRadius={'full'} />
+      </Stack>
+
+      <Box
+        bg={'gray.200'}
+        flex={1}
+        px={4}
+        pb={4}
+        mt={-4}
+        borderTopRadius={'2xl'}>
+        <Box p={4} bg={'white'} borderRadius={'3xl'} flex={1}>
           <HStack justifyContent={'space-between'} px={4} mb={6}>
             <Text bold>Total : {data.length}</Text>
 
@@ -262,68 +314,80 @@ function cek() {
             //   }
             //   return false;
             // })}
-            
+
             renderItem={({item, index}) => (
               <Pressable
                 px={4}
-                onPress={() => navigation.navigate('Detailberkas', { item })}
-                key={index}
-              >
+                onPress={() => navigation.navigate('Detailberkas', {item})}
+                key={index}>
                 <HStack justifyContent={'space-between'}>
                   <Stack flex={1}>
-                    <Heading>{item.nama_dokumen + index}</Heading>
+                    <Heading>
+                      {index + 1}. {item.nama_dokumen}
+                    </Heading>
 
                     <HStack>
-                        <Text w={32}>Tanggal Diterima</Text>
-                        <Text>: {formatTanggal(item.tanggal_diterima)}</Text>
-                      </HStack>
-                      <HStack>
-                        <Text w={32}>Tanggal Dokumen</Text>
-                        <Text>: {formatTanggal(item.tanggal_dokumen)}</Text>
-                      </HStack>
-                      <HStack>
-                        <Text w={32}>Agenda</Text>
-                        <Text>: {item.agenda}</Text>
-                      </HStack>
-                      
-                      <HStack justifyContent={'space-between'} alignItems={'center'}>
-
+                      <Text w={32}>Tanggal Diterima</Text>
+                      <Text>: {formatTanggal(item.tanggal_diterima)}</Text>
+                    </HStack>
                     <HStack>
-                    <Button marginTop={4} marginRight={2}
-                      bg={'cyan.800'}
-                      // py={1}
-                      borderRadius={'full'}
-                      onPress={() => {
-                        navigation.navigate('History', {tiket_id:item.tiket_id}); 
-                      }}>
-                      <Icon
-                        name="history" 
-                        as={MaterialCommunityIcons}
-                        size={5} 
-                        color="white"
-                      />
-                    </Button>
-
-                    <Button marginTop={4}
-                      bg={'cyan.600'}
-                      // py={1}
-                      borderRadius={'full'}
-                      onPress={() => {
-                        navigation.navigate('Listdisposisi'); 
-                      }}>
-                      <Icon
-                        name="file-send-outline" 
-                        as={MaterialCommunityIcons}
-                        size={5} 
-                        color="white"
-                      />
-                    </Button>
+                      <Text w={32}>Tanggal Dokumen</Text>
+                      <Text>: {formatTanggal(item.tanggal_dokumen)}</Text>
                     </HStack>
-                    <Text fontSize="xl" fontWeight="bold">{item.tiket_id}</Text>
+                    <HStack>
+                      <Text w={32}>Agenda</Text>
+                      <Text>: {item.agenda}</Text>
                     </HStack>
 
-                      </Stack>
+                    <HStack
+                      justifyContent={'space-between'}
+                      alignItems={'center'}>
                       <HStack>
+                        <Button
+                          marginTop={4}
+                          marginRight={2}
+                          w={10}
+                          h={10}
+                          bg={'cyan.800'}
+                          // py={1}
+                          borderRadius={'full'}
+                          onPress={() => {
+                            navigation.navigate('History', {
+                              tiket_id: item.tiket_id,
+                            });
+                          }}>
+                          <Icon
+                            name="history"
+                            as={MaterialCommunityIcons}
+                            size={5}
+                            color="white"
+                          />
+                        </Button>
+
+                        <Button
+                          marginTop={4}
+                          bg={'cyan.600'}
+                          // py={1}
+                          w={10}
+                          h={10}
+                          borderRadius={'full'}
+                          onPress={() => {
+                            navigation.navigate('Listdisposisi', {surat: item});
+                          }}>
+                          <Icon
+                            name="file-send-outline"
+                            as={MaterialCommunityIcons}
+                            size={5}
+                            color="white"
+                          />
+                        </Button>
+                      </HStack>
+                      <Text fontSize="xl" fontWeight="bold" color="gray.600">
+                        {item.tiket_id}
+                      </Text>
+                    </HStack>
+                  </Stack>
+                  <HStack>
                     <Stack space={2}>
                       <Center
                         w={12}
@@ -333,22 +397,35 @@ function cek() {
                             : item.status === 2
                             ? 'gray'
                             : item.status === 3
-                            ? 'orange'  
+                            ? 'orange'
                             : 'green'
                         }
                         py={1}
                         borderRadius={'full'}
-                        borderWidth={0} 
-                        borderColor="transparent" 
-                        >
+                        borderWidth={0}
+                        borderColor="transparent">
                         {item.status == 1 ? (
-                            <Icon  as={MaterialCommunityIcons} name="check-all" Size={5} color="blue" />
-                          ) : item.status == 2 ? (
-                            <Icon  as={MaterialCommunityIcons} name="archive-lock-outline" Size={5} color="gray" />
-                          ) : item.status === 3 ? (
-                            <Icon as={MaterialCommunityIcons} name="check" size={5} color="green" />
-                          ) : null}
-      
+                          <Icon
+                            as={MaterialCommunityIcons}
+                            name="check-all"
+                            Size={5}
+                            color="blue"
+                          />
+                        ) : item.status == 2 ? (
+                          <Icon
+                            as={MaterialCommunityIcons}
+                            name="archive-lock-outline"
+                            Size={5}
+                            color="gray"
+                          />
+                        ) : item.status === 3 ? (
+                          <Icon
+                            as={MaterialCommunityIcons}
+                            name="check"
+                            size={5}
+                            color="green"
+                          />
+                        ) : null}
                       </Center>
                     </Stack>
                   </HStack>

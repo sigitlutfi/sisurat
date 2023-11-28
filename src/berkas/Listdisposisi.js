@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from 'react';
-import { View,  FlatList, TouchableOpacity,Alert, } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, FlatList, TouchableOpacity, Alert} from 'react-native';
 import axios from 'axios';
 import {
   Actionsheet,
@@ -33,14 +33,14 @@ import moment from 'moment';
 import 'moment/locale/id';
 import Header from '../common/Header';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DocumentPicker from 'react-native-document-picker';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 moment.locale('id');
 
-export default function Daftarberkas({ route, navigation }) {
-  const { conf, user } = route.params;
+export default function Listdisposisi({route, navigation}) {
+  const {conf, user, surat} = route.params;
   const [data, setData] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -50,8 +50,7 @@ export default function Daftarberkas({ route, navigation }) {
   const [keterangan, setKeterangan] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [isNameFilled, setIsNameFilled] = useState(false);
-const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
-
+  const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
 
   useEffect(() => {
     // Fetch disposisi data using Axios and set it in the 'data' state
@@ -62,43 +61,46 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
         id_pegawai: '1',
       },
     })
-      .then((response) => {
+      .then(response => {
         if (response.data.data !== undefined) {
           setData(response.data.data);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }, []);
 
   const handleSearch = () => {
-    const results = data.filter((item) =>
-      Object.values(item).some((value) => value.includes(searchKeyword))
+    const results = data.filter(item =>
+      Object.values(item).some(value => value.includes(searchKeyword)),
     );
     setSearchResults(results);
     setShowSearchModal(true);
   };
 
-  const handleResultClick = (result) => {
-    const isUserSelected = selectedUsers.some((user) => user.id === result.id);
+  const handleResultClick = result => {
+    const isUserSelected = selectedUsers.some(user => user.id === result.id);
 
     if (!isUserSelected) {
       setSelectedUsers([...selectedUsers, result]);
     } else {
-      setSelectedUsers(selectedUsers.filter((user) => user.id !== result.id));
+      setSelectedUsers(selectedUsers.filter(user => user.id !== result.id));
     }
     setShowSearchModal(false);
     setIsNameFilled(true);
   };
-  const handleKeteranganChange = (text) => {
+  const handleKeteranganChange = text => {
     setKeterangan(text);
-    setIsKeteranganFilled(!!text); 
+    setIsKeteranganFilled(!!text);
   };
 
   const sendNotification = () => {
     if (!selectedUsers.length || !keterangan) {
-      Alert.alert('Info', 'Harap isi nama dan keterangan sebelum mengirim disposisi.');
+      Alert.alert(
+        'Info',
+        'Harap isi nama dan keterangan sebelum mengirim disposisi.',
+      );
       return;
     }
     Alert.alert(
@@ -117,39 +119,46 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
           },
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
-
+  console.log(surat);
   return (
     <NativeBaseProvider>
       <Header tit="Disposisi" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <Box p={4} bg={'white'} borderRadius={'3xl'}>
-        <Box bg="gray.100" p={4} borderRadius={8}>
-            <Text fontWeight="bold" mb={2}>
-              Pilih Nama
+          <Heading fontWeight="bold" mb={2}>
+            {surat.nama_dokumen}
+          </Heading>
+          <Text fontWeight="bold" mb={2}>
+            {surat.nama_pengirim}
+          </Text>
+          <Text>Agenda : {surat.agenda}</Text>
+          <Divider my={4} />
+          <Text fontWeight="bold" mb={2}>
+            Tujuan
+          </Text>
+          {selectedUsers.map((user, index) => (
+            <Text key={index} fontWeight="bold" fontSize={24} mb={2}>
+              {user.username}
             </Text>
-            {selectedUsers.map((user) => (
-              <Text key={user.id} fontWeight="bold" fontSize={24} mb={2}>
-                {user.username}
-              </Text>
-            ))}
-          </Box>
+          ))}
           <HStack space={4}>
             <Select
               flex={1}
               variant={'rounded'}
               placeholder="Pilih tujuan disposisi"
-              onValueChange={(value) => handleResultClick(value)}
-            >
+              onValueChange={value => handleResultClick(value)}>
               {data.map((result, index) => (
                 <Select.Item
                   key={index}
                   label={
                     <HStack space={2} alignItems={'center'}>
-                      <Avatar source={{ uri: result.profilePicture }} size="md" />
-                      <Text color="black" bold>{result.username}</Text>
+                      <Avatar source={{uri: result.profilePicture}} size="md" />
+                      <Text color="black" bold>
+                        {result.username}
+                      </Text>
                     </HStack>
                   }
                   value={result}
@@ -157,21 +166,19 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
               ))}
             </Select>
           </HStack>
-          
-          <Box bg="gray.100" p={4} borderRadius={8}>
-            <Text fontWeight="bold" mb={2}>
-              Keterangan
-            </Text>
-            <Box borderWidth={1} borderColor="gray.300" shadow={2}>
-              <Input
-                variant="filled"
-                placeholder="Masukkan keterangan"
-                value={keterangan}
-                onChangeText={(text) => setKeterangan(text)}
-              />
-            </Box>
-          </Box>
-          <Modal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)}>
+          <Text fontWeight="bold" mb={2}>
+            Keterangan
+          </Text>
+          <Input
+            variant="outline"
+            borderRadius={'full'}
+            placeholder="Masukkan keterangan"
+            value={keterangan}
+            onChangeText={text => setKeterangan(text)}
+          />
+          <Modal
+            isOpen={showSearchModal}
+            onClose={() => setShowSearchModal(false)}>
             <Modal.Content>
               <Modal.Header>Pilih Disposisi</Modal.Header>
               <Modal.Body>
@@ -179,13 +186,12 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
                   <Pressable
                     key={index}
                     onPress={() => handleResultClick(result)}
-                    _pressed={{ bg: 'gray.200' }}
+                    _pressed={{bg: 'gray.200'}}
                     mb={2}
-                    p={2}
-                  >
-                    
-                      <Text fontWeight="bold" color="black"> {result.username}</Text>
-                   
+                    p={2}>
+                    <Text fontWeight="bold" color="black">
+                      {result.username}
+                    </Text>
                   </Pressable>
                 ))}
               </Modal.Body>
@@ -195,8 +201,7 @@ const [isKeteranganFilled, setIsKeteranganFilled] = useState(false);
             borderRadius={'full'}
             marginTop={4}
             bg={conf.color}
-            onPress={sendNotification}
-          >
+            onPress={sendNotification}>
             Kirim
           </Button>
         </Box>

@@ -149,13 +149,13 @@ export default function App({navigation}) {
     axios({method: 'GET', url: 'http://103.100.27.59/~lacaksurat/svc_info.php'})
       .then(r => {
         console.log(r);
-        const cr = r.data;
+        const cr = r.data.data;
 
-        cr.url = 'http://103.100.27.59/~lacaksurat/svc_auth.php';
+        cr.url = 'http://103.100.27.59/~lacaksurat/';
         cr.color = '#e11d48';
-        cr.name_app = r.data.nama_aplikasi;
-        cr.subname_app = r.data.nama_singkat_aplikasi;
-        cr.icon = r.data.logo;
+        cr.name_app = r.data.data.app_title;
+        cr.subname_app = r.data.data.app_title;
+        cr.icon = r.data.data.app_logo;
 
         bootstrapAsync1(cr);
         setLoadconf(false);
@@ -382,6 +382,7 @@ export default function App({navigation}) {
                 accessibilityLabel={options.tabBarAccessibilityLabel}
                 testID={options.tabBarTestID}
                 onPress={onPress}
+                key={index}
                 onLongPress={onLongPress}
                 style={{height: 48, justifyContent: 'flex-end'}}>
                 {isFocused ? (

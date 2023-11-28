@@ -27,7 +27,13 @@ import {
   VStack,
 } from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, Linking,StyleSheet, TouchableOpacity, Alert,} from 'react-native';
+import {
+  Dimensions,
+  Linking,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import AuthContext from '../../AuthContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ImageSlider} from 'react-native-image-slider-banner';
@@ -90,7 +96,7 @@ export default function Scanberkas({route, navigation}) {
           },
         },
       ],
-      { cancelable: false }
+      {cancelable: false},
     );
   };
 
@@ -98,13 +104,12 @@ export default function Scanberkas({route, navigation}) {
     <NativeBaseProvider>
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <QRCodeScanner
-          onRead={(v) => console.log(v)}
+          onRead={v => console.log(v)}
           flashMode={RNCamera.Constants.FlashMode.torch}
           topContent={
-            <VStack flex={1} justifyContent="center">
+            <VStack justifyContent="center">
               <Text style={styles.centerText}>
-                Mohon{" "}
-                <Text style={styles.textBold}>Arahkan ke QR Code</Text>
+                <Text style={styles.textBold}>Mohon arahkan ke QR Code</Text>
               </Text>
             </VStack>
           }
@@ -115,60 +120,44 @@ export default function Scanberkas({route, navigation}) {
             justifyContent: 'center',
           }}
         />
-        <Divider />
-        <VStack>
-          <Text fontSize={20} fontWeight="bold" marginLeft={160} >Atau</Text>
-        </VStack>
-        <Divider />
-        <VStack>
-          <Heading> Kode Tiket</Heading>
+
+        <VStack space={4}>
+          <Heading>Atau gunakan Kode Tiket</Heading>
           {ticketCodes.map((code, index) => (
-            <Box
-              key={index}
-              bg="white"
-              borderRadius="md"
-              shadow={2}
-              p={2}
-              mt={2}
-              borderColor="gray.300"
-              borderWidth={1}
-            >
-              <Input
-                placeholder={`Masukkan Kode Tiket`}
-                onChangeText={(text) => handleTicketCodeChange(text, index)}
-                value={code}
-              />
-            </Box>
+            <Input
+              variant={'filled'}
+              borderRadius={'full'}
+              placeholder={`Masukkan Kode Tiket`}
+              onChangeText={text => handleTicketCodeChange(text, index)}
+              value={code}
+            />
           ))}
+          <Button
+            onPress={handleActionButtonPress}
+            bg={'#e81c4c'}
+            borderRadius={'full'}>
+            Kirim
+          </Button>
         </VStack>
-        <Button
-          onPress={handleActionButtonPress}
-          bg={'#e81c4c'}
-          borderRadius={'full'}
-          mt={4}
-        >
-          Kirim
-        </Button>
       </Box>
     </NativeBaseProvider>
   );
 }
-
 
 const styles = StyleSheet.create({
   centerText: {
     flex: 1,
     fontSize: 18,
     padding: 24,
-    color: "#777",
+    color: '#777',
   },
   textBold: {
-    fontWeight: "500",
-    color: "#777",
+    fontWeight: '500',
+    color: '#777',
   },
   buttonText: {
     fontSize: 16,
-    color: "rgb(0,122,255)",
+    color: 'rgb(0,122,255)',
   },
   buttonTouchable: {
     padding: 16,

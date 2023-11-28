@@ -116,7 +116,7 @@ export default function Login({route, navigation}) {
     }
     return false;
   };
-  
+
   async function signx(params) {
     await AsyncStorage.setItem(
       'userData',
@@ -161,12 +161,12 @@ export default function Login({route, navigation}) {
     data.append('username', username);
     data.append('password', password);
 
-    axios({method: 'post', url: conf.url + 'auth', data: data})
+    axios({method: 'post', url: conf.url + 'svc_auth.php', data: data})
       .then(res => {
         setLoading(false);
 
-        var user = res.data.user;
-        user.token = res.data.token;
+        var user = res.data.data;
+        user.token = res.data.data.token;
         Toast.show({title: res.data.message});
         AsyncStorage.setItem('userData', JSON.stringify(user));
         signIn(user);
@@ -179,7 +179,7 @@ export default function Login({route, navigation}) {
         setLoading(false);
       });
   }
-
+  console.log(route);
   return (
     <NativeBaseProvider>
       <Stack bg={'white'} flex={1}>
@@ -241,9 +241,9 @@ export default function Login({route, navigation}) {
                   mt="2"
                   bg={conf.color}
                   borderRadius={'full'}
-                  onPress={
-                    () => signx()
-                    //presignin()
+                  onPress={() =>
+                    //signx()
+                    presignin()
                   }>
                   Masuk
                 </Button>

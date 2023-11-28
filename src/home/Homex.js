@@ -89,7 +89,7 @@ export default function Homex({route, navigation}) {
             <Stack ml={4}>
               <Text>Selamat Datang</Text>
               <Heading color={conf.color} mb={2}>
-                {user.name}
+                {user.nama_pegawai}
               </Heading>
               <Text bold>Di Aplikasi Lacak Berkas</Text>
               <Text bold>{conf.daerah}</Text>

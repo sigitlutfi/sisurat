@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View,  FlatList, TouchableOpacity, Alert, } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, FlatList, TouchableOpacity, Alert} from 'react-native';
 import axios from 'axios';
 import {
   Actionsheet,
@@ -32,13 +32,13 @@ import moment from 'moment';
 import 'moment/locale/id';
 import Header from '../common/Header';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DocumentPicker from 'react-native-document-picker';
 
 moment.locale('id');
 
-export default function Detailberkas({ route, navigation }) {
-  const { conf, user, item } = route.params;
+export default function Detailberkas({route, navigation}) {
+  const {conf, user, item} = route.params;
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [notification, setNotification] = useState('');
@@ -57,7 +57,7 @@ export default function Detailberkas({ route, navigation }) {
   };
 
   const formatTanggal = tanggal => {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const options = {day: 'numeric', month: 'long', year: 'numeric'};
     return new Date(tanggal).toLocaleDateString('id-ID', options);
   };
 
@@ -74,7 +74,6 @@ export default function Detailberkas({ route, navigation }) {
       }
     }
   };
-  
 
   const handleArsipButton = () => {
     Alert.alert(
@@ -96,101 +95,132 @@ export default function Detailberkas({ route, navigation }) {
     );
   };
 
-  useEffect(() => {
-    axios({
-      method: 'get',
-      url: 'http://103.100.27.59/~lacaksurat/list_surat.php',
-      headers: {
-        id_pegawai: '1',
-      },
-    })
-      .then(v => {
-        if (v.data.data != undefined) {
-          setData(v.data.data);
-        }
-        console.log(v);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  });
-
   return (
     <NativeBaseProvider>
       <Header tit="Detail Berkas" nv={navigation} conf={conf} />
-      <ScrollView>
-        <Box bg={'gray.200'} flex={1} px={4} pb={4} mt={4}>
+
+      <Box bg={'gray.200'} flex={1} px={4} pb={4}>
+        <Box bg={'white'} p={4} borderRadius={'2xl'}>
           <VStack space={2} alignItems="flex-start">
             {[
-              { label: 'Nama Dokumen', value: item.nama_dokumen, divider: ':' },
-              { label: 'Agenda', value: item.agenda, divider: ':' },
-              { label: 'Nama Pengirim', value: item.nama_pengirim, divider: ':' },
-              { label: 'Perihal', value: item.perihal, divider: ':' },
-              { label: 'Ringkasan Dokumen', value: item.ringkasan_dokumen, divider: ':' },
-              { label: 'Tanggal Diterima', value: formatTanggal(item.tanggal_diterima), divider: ':' },
-              { label: 'Tanggal Dokumen', value: formatTanggal(item.tanggal_dokumen) , divider: ':'},
-              { label: 'Tanggal Agenda', value: formatTanggal(item.tanggal_agenda), divider: ':' },
+              {label: 'Nama Dokumen', value: item.nama_dokumen, divider: ':'},
+              {label: 'Agenda', value: item.agenda, divider: ':'},
+              {
+                label: 'Nama Pengirim',
+                value: item.nama_pengirim,
+                divider: ':',
+              },
+              {label: 'Perihal', value: item.perihal, divider: ':'},
+              {
+                label: 'Ringkasan Dokumen',
+                value: item.ringkasan_dokumen,
+                divider: ':',
+              },
+              {
+                label: 'Tanggal Diterima',
+                value: formatTanggal(item.tanggal_diterima),
+                divider: ':',
+              },
+              {
+                label: 'Tanggal Dokumen',
+                value: formatTanggal(item.tanggal_dokumen),
+                divider: ':',
+              },
+              {
+                label: 'Tanggal Agenda',
+                value: formatTanggal(item.tanggal_agenda),
+                divider: ':',
+              },
               {
                 label: 'Lampiran',
                 value: (
-                  <TouchableOpacity onPress={() => openAttachment(item.lampiran)}>
+                  <TouchableOpacity
+                    onPress={() => openAttachment(item.lampiran)}>
                     <Text bold>{item.lampiran}</Text>
                   </TouchableOpacity>
                 ),
-                divider: ':'
+                divider: ':',
               },
             ].map((item, index) => (
               <HStack key={index} width="100%">
-                <Text bold width={'40%'}>{item.label}</Text>
-                <Text bold width={'5%'}>{item.divider}</Text>
+                <Text bold width={'40%'}>
+                  {item.label}
+                </Text>
+                <Text bold width={'5%'}>
+                  {item.divider}
+                </Text>
                 <Text maxWidth={'55%'}>{item.value}</Text>
               </HStack>
             ))}
             <Divider my={2} />
           </VStack>
+          <Box px={4} pb={4}>
+            <HStack space={4}>
+              <VStack alignItems="center">
+                <Button
+                  marginTop={2}
+                  bg={'cyan.800'}
+                  w={12}
+                  h={12}
+                  borderRadius={'full'}
+                  onPress={() => {
+                    navigation.navigate('History', {tiket_id: item.tiket_id});
+                  }}>
+                  <Icon
+                    name="history"
+                    as={MaterialCommunityIcons}
+                    size={5}
+                    color="white"
+                  />
+                </Button>
+                <Text fontWeight="bold" marginTop={2}>
+                  History
+                </Text>
+              </VStack>
+              <VStack alignItems="center">
+                <Button
+                  marginTop={2}
+                  bg={'orange.600'}
+                  w={12}
+                  h={12}
+                  borderRadius={'full'}
+                  onPress={() => {
+                    navigation.navigate('Listdisposisi', {surat: item});
+                  }}>
+                  <Icon
+                    name="file-send-outline"
+                    as={MaterialCommunityIcons}
+                    size={5}
+                    color="white"
+                  />
+                </Button>
+                <Text fontWeight="bold" marginTop={2}>
+                  Disposisi
+                </Text>
+              </VStack>
+              <VStack alignItems="center">
+                <Button
+                  marginTop={2}
+                  bg={'red.600'}
+                  w={12}
+                  h={12}
+                  borderRadius={'full'}
+                  onPress={handleArsipButton}>
+                  <Icon
+                    name="archive-lock-outline"
+                    as={MaterialCommunityIcons}
+                    size={5}
+                    color="white"
+                  />
+                </Button>
+                <Text fontWeight="bold" marginTop={2} alignSelf={'center'}>
+                  Arsip
+                </Text>
+              </VStack>
+            </HStack>
+          </Box>
         </Box>
-        <Box px={4} pb={4}>
-          <HStack spacing={4} >
-          <VStack alignItems="center">
-            <Button
-              marginTop={2}
-              marginRight={2}
-              bg={'cyan.800'}
-              borderRadius={'full'}
-              onPress={() => {
-                navigation.navigate('History' , {tiket_id:item.tiket_id});
-              }}>
-              <Icon name="history" as={MaterialCommunityIcons} size={5} color="white" />
-            </Button>
-            <Text  fontWeight="bold"  marginTop={2}>History</Text>
-            </VStack>
-            <VStack alignItems="center">
-            <Button
-              marginTop={2}
-              marginRight={2}
-              bg={'orange.600'}
-              borderRadius={'full'}
-              onPress={() => {
-                navigation.navigate('Listdisposisi');
-              }}>
-              <Icon name="file-send-outline" as={MaterialCommunityIcons} size={5} color="white" />
-            </Button>
-            <Text  fontWeight="bold"  marginTop={2}>Disposisi</Text>
-            </VStack>
-            <VStack alignItems="center">
-            <Button
-              marginTop={2}
-              marginRight={2}
-              bg={'red.600'}
-              borderRadius={'full'}
-              onPress={handleArsipButton}>
-              <Icon name="archive-lock-outline" as={MaterialCommunityIcons} size={5} color="white" />
-            </Button>
-            <Text  fontWeight="bold"  marginTop={2}>Arsip</Text>
-            </VStack>
-          </HStack>
-        </Box>
-      </ScrollView>
+      </Box>
     </NativeBaseProvider>
   );
 }

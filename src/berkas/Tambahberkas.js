@@ -45,138 +45,135 @@ import Geolocation from '@react-native-community/geolocation';
 import MapView from 'react-native-maps';
 import axios, {Axios} from 'axios';
 import DatePicker from 'react-native-date-picker';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DocumentPicker from 'react-native-document-picker';
 import Header from '../common/Header';
 // import { Icon, Text } from 'react-native-elements';
 
 export default function Tambahberkas({route, navigation}) {
-	const {conf, user} = route.params;
-	const [isSubmissionSuccess, setIsSubmissionSuccess] = useState(false);
+  const {conf, user} = route.params;
+  const [isSubmissionSuccess, setIsSubmissionSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [nama, setNama] = useState("");
-	const [agenda, setAgenda] = useState("");
-	const [perihal, setPerihal] = useState("");
-	const [pengirim, setPengirim] = useState("");
-	const [uraian, setUraian] = useState("");
-	const [tanggalDiterima, setTanggalDiterima] = useState(null);
-	const [tanggalDiterimaVisible, setTanggalDiterimaVisible] = useState(false);
-	const [tanggalDokumen, setTanggalDokumen] = useState(null);
-	const [tanggalDokumenVisible, setTanggalDokumenVisible] = useState(false);
-	const [tanggalAgenda, setTanggalAgenda] = useState(null);
-	const [tanggalAgendaVisible, setTanggalAgendaVisible] = useState(false);
-	const [dokumen, setDokumen] = useState(null);
+  const [nama, setNama] = useState('');
+  const [agenda, setAgenda] = useState('');
+  const [perihal, setPerihal] = useState('');
+  const [pengirim, setPengirim] = useState('');
+  const [uraian, setUraian] = useState('');
+  const [tanggalDiterima, setTanggalDiterima] = useState(null);
+  const [tanggalDiterimaVisible, setTanggalDiterimaVisible] = useState(false);
+  const [tanggalDokumen, setTanggalDokumen] = useState(null);
+  const [tanggalDokumenVisible, setTanggalDokumenVisible] = useState(false);
+  const [tanggalAgenda, setTanggalAgenda] = useState(null);
+  const [tanggalAgendaVisible, setTanggalAgendaVisible] = useState(false);
+  const [dokumen, setDokumen] = useState(null);
 
-	toggleTanggalDiterima = () => {
-		setTanggalDiterimaVisible(tanggalDiterimaVisible ? false : true);
-	};
+  toggleTanggalDiterima = () => {
+    setTanggalDiterimaVisible(tanggalDiterimaVisible ? false : true);
+  };
 
-	confirmTanggalDiterima = (date) => {
-		setTanggalDiterima(date);
-		toggleTanggalDiterima();
-	};
+  confirmTanggalDiterima = date => {
+    setTanggalDiterima(date);
+    toggleTanggalDiterima();
+  };
 
-	toggleTanggalDokumen = () => {
-		setTanggalDokumenVisible(tanggalDokumenVisible ? false : true);
-	};
+  toggleTanggalDokumen = () => {
+    setTanggalDokumenVisible(tanggalDokumenVisible ? false : true);
+  };
 
-	confirmTanggalDokumen = (date) => {
-		setTanggalDokumen(date);
-		toggleTanggalDokumen();
-	};
+  confirmTanggalDokumen = date => {
+    setTanggalDokumen(date);
+    toggleTanggalDokumen();
+  };
 
-	toggleTanggalAgenda = () => {
-		setTanggalAgendaVisible(tanggalAgendaVisible ? false : true);
-	};
+  toggleTanggalAgenda = () => {
+    setTanggalAgendaVisible(tanggalAgendaVisible ? false : true);
+  };
 
-	confirmTanggalAgenda = (date) => {
-		setTanggalAgenda(date);
-		toggleTanggalAgenda();
-	};
+  confirmTanggalAgenda = date => {
+    setTanggalAgenda(date);
+    toggleTanggalAgenda();
+  };
 
-	handleFilePick = async () => {
-		try {
-			const result = await DocumentPicker.pick({
-				type: "application/pdf",
-			});
+  handleFilePick = async () => {
+    try {
+      const result = await DocumentPicker.pick({
+        type: 'application/pdf',
+      });
 
-			if (result.type === "success") {
+      if (result.type === 'success') {
         setDokumen(result);
-				console.log(result.uri, result.name, result.size);
-			}
-		} catch (err) {
-			throw err;
-		}
-	};
+        console.log(result.uri, result.name, result.size);
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
 
-	const formatDate = (date) => {
-		const options = { day: 'numeric', month: 'long', year: 'numeric' };
-		return date ? date.toLocaleDateString('en-US', options) : 'Pilih Tanggal';
-	  };
-	const handleAlertButtonPress = () => {
-		  // Navigate to the "Daftar Berkas" screen
-		  navigation.navigate('Tambahberkasberhasil'); // Assuming the screen name is 'DaftarBerkas'
-		};
-	const handleSimpanBerkas = async () => {
-		const formData = new FormData();
-    
-		formData.append("p_nama_dokumen", nama);
-		formData.append("p_agenda", agenda);
-		formData.append("p_perihal", perihal);
-		formData.append("p_nama_pengirim", pengirim);
-		formData.append("p_ringkasan_dokumen", uraian);
-		formData.append(
-			"p_tanggal_diterima",
-			tanggalDiterima ? tanggalDiterima.toISOString().split("T")[0] : ""
-		);
-		formData.append(
-			"p_tanggal_dokumen",
-			tanggalDokumen ? tanggalDokumen.toISOString().split("T")[0] : ""
-		);
-		formData.append(
-			"p_tanggal_agenda",
-			tanggalAgenda ? tanggalAgenda.toISOString().split("T")[0] : ""
-		);
+  const formatDate = date => {
+    const options = {day: 'numeric', month: 'long', year: 'numeric'};
+    return date ? date.toLocaleDateString('en-US', options) : 'Pilih Tanggal';
+  };
+  const handleAlertButtonPress = () => {
+    // Navigate to the "Daftar Berkas" screen
+    navigation.navigate('Tambahberkasberhasil'); // Assuming the screen name is 'DaftarBerkas'
+  };
+  const handleSimpanBerkas = async () => {
+    const formData = new FormData();
+
+    formData.append('p_nama_dokumen', nama);
+    formData.append('p_agenda', agenda);
+    formData.append('p_perihal', perihal);
+    formData.append('p_nama_pengirim', pengirim);
+    formData.append('p_ringkasan_dokumen', uraian);
+    formData.append(
+      'p_tanggal_diterima',
+      tanggalDiterima ? tanggalDiterima.toISOString().split('T')[0] : '',
+    );
+    formData.append(
+      'p_tanggal_dokumen',
+      tanggalDokumen ? tanggalDokumen.toISOString().split('T')[0] : '',
+    );
+    formData.append(
+      'p_tanggal_agenda',
+      tanggalAgenda ? tanggalAgenda.toISOString().split('T')[0] : '',
+    );
     if (dokumen) {
-      formData.append(
-        "p_lampiran",
-        {
-          uri: dokumen.uri,
-          name: dokumen.name,
-          type: 'application/pdf',
-        }
-      );
+      formData.append('p_lampiran', {
+        uri: dokumen.uri,
+        name: dokumen.name,
+        type: 'application/pdf',
+      });
     }
 
-		console.log("Create:", formData);
-		try {
-			const headers = {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			};
-			const response = await axios.post(
-				"http://103.100.27.59/~lacaksurat/register_surat.php",
-				formData,
-				headers
-			);
-      
-			if (response.data.code === 200) {
+    console.log('Create:', formData);
+    try {
+      const headers = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      const response = await axios.post(
+        'http://103.100.27.59/~lacaksurat/register_surat.php',
+        formData,
+        headers,
+      );
+
+      if (response.data.code === 200) {
         setLoading(true);
         setIsSubmissionSuccess(true);
         Alert.alert(
           'Berkas berhasil ditambahkan',
           'Tiket ID: ' + response.data.tiket_id,
-		  
+
           [
             {
               text: 'OK',
               onPress: () => {
-				navigation.navigate('Tambahberkasberhasil');
+                navigation.navigate('Tambahberkasberhasil');
               },
             },
           ],
-          { cancelable: false } // To prevent dismissal by tapping outside of the alert
+          {cancelable: false}, // To prevent dismissal by tapping outside of the alert
         );
         console.log('Response', response.data);
       } else {
@@ -185,172 +182,166 @@ export default function Tambahberkas({route, navigation}) {
     } catch (error) {
       console.error('Error', error);
     }
-	};
+  };
 
-   
-
-	
-	  
-
-	return (
-		<NativeBaseProvider>
-			<Header tit="Tambah Berkas" nv={navigation} conf={conf} />
+  return (
+    <NativeBaseProvider>
+      <Header tit="Tambah Berkas" nv={navigation} conf={conf} />
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
-      <ScrollView style={{ flex: 1 }}>
-			<View style={styles.container}>
-				<Text>Nama Dokumen*</Text>
-				<TextInput style={styles.input} value={nama} onChangeText={setNama} />
+        <ScrollView style={{flex: 1}}>
+          <View style={styles.container}>
+            <Text>Nama Dokumen*</Text>
+            <TextInput
+              style={styles.input}
+              value={nama}
+              onChangeText={setNama}
+            />
 
-				<Text>Agenda Dokumen*</Text>
-				<TextInput
-					style={styles.input}
-					value={agenda}
-					onChangeText={setAgenda}
-				/>
+            <Text>Agenda Dokumen*</Text>
+            <TextInput
+              style={styles.input}
+              value={agenda}
+              onChangeText={setAgenda}
+            />
 
-				<Text>Perihal</Text>
-				<TextInput
-					style={styles.input}
-					value={perihal}
-					onChangeText={setPerihal}
-				/>
+            <Text>Perihal</Text>
+            <TextInput
+              style={styles.input}
+              value={perihal}
+              onChangeText={setPerihal}
+            />
 
-				<Text>Nama Pengirim*</Text>
-				<TextInput
-					style={styles.input}
-					value={pengirim}
-					onChangeText={setPengirim}
-				/>
+            <Text>Nama Pengirim*</Text>
+            <TextInput
+              style={styles.input}
+              value={pengirim}
+              onChangeText={setPengirim}
+            />
 
-				<Text>Uraian Dokumen</Text>
-				<TextInput
-					style={styles.inputBox}
-					multiline={true}
-					numberOfLines={4}
-					value={uraian}
-					onChangeText={setUraian}
-				/>
+            <Text>Uraian Dokumen</Text>
+            <TextInput
+              style={styles.inputBox}
+              multiline={true}
+              numberOfLines={4}
+              value={uraian}
+              onChangeText={setUraian}
+            />
 
-<Text>Tanggal Diterima</Text>
-      <Pressable style={styles.buttonDate} onPress={toggleTanggalDiterima}>
-        <Text style={styles.buttonText}>
-          {formatDate(tanggalDiterima)}
-        </Text>
-      </Pressable>
-      <DateTimePickerModal
-        isVisible={tanggalDiterimaVisible}
-        mode="date"
-        onConfirm={confirmTanggalDiterima}
-        onCancel={toggleTanggalDiterima}
-      />
+            <Text>Tanggal Diterima</Text>
+            <Pressable
+              style={styles.buttonDate}
+              onPress={toggleTanggalDiterima}>
+              <Text style={styles.buttonText}>
+                {formatDate(tanggalDiterima)}
+              </Text>
+            </Pressable>
+            <DateTimePickerModal
+              isVisible={tanggalDiterimaVisible}
+              mode="date"
+              onConfirm={confirmTanggalDiterima}
+              onCancel={toggleTanggalDiterima}
+            />
 
-      <Text>Tanggal Dokumen</Text>
-      <Pressable style={styles.buttonDate} onPress={toggleTanggalDokumen}>
-        <Text style={styles.buttonText}>
-          {formatDate(tanggalDokumen)}
-        </Text>
-      </Pressable>
-      <DateTimePickerModal
-        isVisible={tanggalDokumenVisible}
-        mode="date"
-        onConfirm={confirmTanggalDokumen}
-        onCancel={toggleTanggalDokumen}
-      />
+            <Text>Tanggal Dokumen</Text>
+            <Pressable style={styles.buttonDate} onPress={toggleTanggalDokumen}>
+              <Text style={styles.buttonText}>
+                {formatDate(tanggalDokumen)}
+              </Text>
+            </Pressable>
+            <DateTimePickerModal
+              isVisible={tanggalDokumenVisible}
+              mode="date"
+              onConfirm={confirmTanggalDokumen}
+              onCancel={toggleTanggalDokumen}
+            />
 
-      <Text>Tanggal Agenda</Text>
-      <Pressable style={styles.buttonDate} onPress={toggleTanggalAgenda}>
-        <Text style={styles.buttonText}>
-          {formatDate(tanggalAgenda)}
-        </Text>
-      </Pressable>
-				<DateTimePickerModal
-					isVisible={tanggalAgendaVisible}
-					mode="date"
-					onConfirm={confirmTanggalAgenda}
-					onCancel={toggleTanggalAgenda}
-				/>
+            <Text>Tanggal Agenda</Text>
+            <Pressable style={styles.buttonDate} onPress={toggleTanggalAgenda}>
+              <Text style={styles.buttonText}>{formatDate(tanggalAgenda)}</Text>
+            </Pressable>
+            <DateTimePickerModal
+              isVisible={tanggalAgendaVisible}
+              mode="date"
+              onConfirm={confirmTanggalAgenda}
+              onCancel={toggleTanggalAgenda}
+            />
 
-				<Text>Lampiran Dokumen</Text>
-				<Pressable style={styles.buttonDate} onPress={handleFilePick}>
-					<Text style={styles.buttonText}>
-          				{dokumen
-							? dokumen.name
-							: "Pilih Berkas PDF"
-						}
-					</Text>
-				</Pressable>
+            <Text>Lampiran Dokumen</Text>
+            <Pressable style={styles.buttonDate} onPress={handleFilePick}>
+              <Text style={styles.buttonText}>
+                {dokumen ? dokumen.name : 'Pilih Berkas PDF'}
+              </Text>
+            </Pressable>
 
-				
-
-
-				<Pressable style={styles.buttonSimpan} onPress={handleSimpanBerkas}>
-					<Text style={styles.buttonText}>Simpan</Text>
-				</Pressable>
-
-			</View>
-		</ScrollView>
-    </Box>
+            <Pressable style={styles.buttonSimpan} onPress={handleSimpanBerkas}>
+              <Text style={styles.buttonText}>Simpan</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </Box>
     </NativeBaseProvider>
-	);
-};
+  );
+}
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 20,
-	},
-	input: {
-		marginBottom: 10,
-		paddingVertical: 5,
-		paddingHorizontal: 10,
-		borderWidth: 1,
-		borderColor: "#ccc",
-		borderRadius: 4,
-	},
-	inputBox: {
-		height: 80,
-		marginBottom: 10,
-		paddingVertical: 5,
-		paddingHorizontal: 10,
-		borderWidth: 1,
-		borderColor: "#ccc",
-		borderRadius: 4,
-	},
-	buttonDate: {
-		alignItems: "center",
-		justifyContent: "center",
-		paddingVertical: 12,
-		paddingHorizontal: 32,
-		borderRadius: 50,
-		elevation: 3,
-		backgroundColor: "#e81c4c",
-		marginBottom: 10,
-	},
-	buttonSimpan: {
-		marginTop: 40,
-		alignItems: "center",
-		justifyContent: "center",
-		paddingVertical: 12,
-		paddingHorizontal: 32,
-		borderRadius: 50,
-		elevation: 3,
-		backgroundColor: "#e81c4c",
-	},
-	buttonText: {
-		fontSize: 16,
-		lineHeight: 21,
-		fontWeight: "bold",
-		letterSpacing: 0.25,
-		color: "white",
-	},
-	buttonLihatDaftar: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		paddingVertical: 12,
-		paddingHorizontal: 32,
-		borderRadius: 50,
-		elevation: 3,
-		backgroundColor: '#4CAF50', // Green color, you can change it
-		marginTop: 20,
-	  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  input: {
+    marginBottom: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: 'white',
+    borderRadius: 4,
+  },
+  inputBox: {
+    height: 80,
+    marginBottom: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    backgroundColor: 'white',
+    borderColor: '#ccc',
+    borderRadius: 4,
+  },
+  buttonDate: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 50,
+    elevation: 3,
+    backgroundColor: '#e81c4c',
+    marginBottom: 10,
+  },
+  buttonSimpan: {
+    marginTop: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 50,
+    elevation: 3,
+    backgroundColor: '#e81c4c',
+  },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
+  buttonLihatDaftar: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 50,
+    elevation: 3,
+    backgroundColor: '#4CAF50', // Green color, you can change it
+    marginTop: 20,
+  },
 });

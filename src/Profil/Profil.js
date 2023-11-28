@@ -53,7 +53,7 @@ export default function Profil({route, navigation}) {
       setImage(user.foto);
     }
   }, []);
-
+  console.log(user);
   return (
     <NativeBaseProvider>
       <Modal isOpen={mkeluar} onClose={() => setMkeluar(false)}>
@@ -84,7 +84,7 @@ export default function Profil({route, navigation}) {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
-      <Stack bg={'gray.100'} flex={1}>
+      <Stack bg={'gray.200'} flex={1}>
         <Heading ml={8} mt={5}>
           Profil pengguna
         </Heading>
@@ -105,9 +105,11 @@ export default function Profil({route, navigation}) {
             bg={'gray.400'}
           />
           <Heading color={conf.color} alignSelf={'center'} mt={4}>
-            {user.name}
+            {user.nama_pegawai}
           </Heading>
-          <Text alignSelf={'center'}>{user.email}</Text>
+          <Text alignSelf={'center'}>
+            {user.email ? user.email : 'dummy@mail.com'}
+          </Text>
           <Divider my={4} />
           <HStack>
             <Stack w={32} space={2}>
@@ -116,7 +118,7 @@ export default function Profil({route, navigation}) {
               <Text bold>Verifikasi email</Text>
             </Stack>
             <Stack space={2}>
-              <Text>: {user.username}</Text>
+              <Text>: {user.username ? user.username : 'dummyuser'}</Text>
               <Text>: {conf.daerah}</Text>
               <Text>
                 :{' '}
