@@ -36,6 +36,7 @@ export default function Profil({route, navigation}) {
   const {conf, user} = route.params;
   const {signOut} = React.useContext(AuthContext);
   const [mkeluar, setMkeluar] = useState(false);
+  const [informasi, setInformasi] = useState(false);
   const [mganti, setMganti] = useState(false);
   const [password, setPassword] = useState('');
   const [lpassword, setLpassword] = useState('');
@@ -47,6 +48,24 @@ export default function Profil({route, navigation}) {
   const [image, setImage] = useState(null);
 
   const {ganti} = React.useContext(AuthContext);
+  const [informasiDetails, setInformasiDetails] = useState(null);
+
+  const showInformasiDetails = () => {
+    const details = `
+    Deskripsi Aplikasi: 
+    Aplikasi Tracking surat ini adalah sebuah
+    aplikasi untuk memantau pergerakan 
+    berkas yang ada pada kantor.
+    
+    Versi Aplikasi:
+    1.0.0
+    
+    Tanggal Rilis: 
+    01 Januari 2023
+  `;
+    setInformasiDetails(details);
+    setInformasi(true);
+  };
 
   useEffect(() => {
     if (user !== null) {
@@ -132,7 +151,12 @@ export default function Profil({route, navigation}) {
 
         {user !== null ? (
           <Box borderRadius={'2xl'} px={4}>
-            <Pressable bg={'white'} borderRadius={'2xl'} p={4}>
+            <Pressable 
+              bg={'white'} 
+              borderRadius={'2xl'} 
+              p={4}
+              onPress={showInformasiDetails}
+              mt={4}>
               <HStack justifyContent={'space-between'}>
                 <HStack>
                   <Icon
@@ -180,6 +204,19 @@ export default function Profil({route, navigation}) {
                 />
               </HStack>
             </Pressable>
+            <Modal isOpen={informasi} onClose={() => setInformasi(false)}>
+        <Modal.Content maxWidth="800px" height="50%">
+          <Modal.CloseButton />
+
+          <Modal.Body>
+            {informasiDetails ? (
+              <Text>{informasiDetails}</Text>
+            ) : (
+              <Text>No information available.</Text>
+            )}
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
           </Box>
         ) : null}
       </Stack>

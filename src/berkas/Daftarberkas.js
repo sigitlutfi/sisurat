@@ -70,6 +70,10 @@ export default function Daftarberkas({route, navigation}) {
   const [as, setAs] = useState(false);
   const [dataas, setDataas] = useState(null);
 
+  const [filterDibaca, setFilterDibaca] = useState(false);
+  const [filterArsip, setFilterArsip] = useState(false);
+  const [filterBelumdibaca, setFilterBelumdibaca] = useState(false);
+
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const handleConfirm = date => {
     setDatePickerVisibility(false);
@@ -90,7 +94,7 @@ export default function Daftarberkas({route, navigation}) {
   }
   useEffect(() => {
     cek();
-  }, []);
+  }, [filter, filterDibaca, filterArsip, filterBelumdibaca]);
 
   function cek() {
     axios({
@@ -173,6 +177,9 @@ export default function Daftarberkas({route, navigation}) {
                 const f = filter;
                 f.status = itemValue;
                 setFilter(f);
+                setFilterDibaca(itemValue === 1);
+                setFilterArsip(itemValue === 2);
+                setFilterBelumdibaca(itemValue === 3);
               }}>
               <Select.Item label="Dibaca" value={1} />
               <Select.Item label="Arsip" value={2} />
@@ -301,19 +308,22 @@ export default function Daftarberkas({route, navigation}) {
             <Text bold>10/120</Text>
           </HStack>
           <FlatList
-            data={data}
+            // data={data}
             // data={data.filter((item) => filter.status === 1 || item.status === filter.status)}
-
-            // data={data.filter((item) => {
-            //   if (
-            //     (filter.tanggal === null || moment(item.tanggal_diterima).isSame(filter.tanggal, 'day')) &&
-            //     (filter.nama === null || item.nama_dokumen === filter.nama) &&
-            //     (filter.status === null || item.status === filter.status)
-            //   ) {
-            //     return true;
-            //   }
-            //   return false;
-            // })}
+            data={data.filter((item) => {
+              if (
+                (filter.tanggal === null ||
+                  moment(item.tanggal_diterima).isSame(filter.tanggal, 'day')) &&
+                (filter.nama === null || item.nama_dokumen === filter.nama) &&
+                ((filter.status === null && !filterDibaca && !filterArsip && !filterBelumdibaca) ||
+                  (filter.status === 1 && filterDibaca) ||
+                  (filter.status === 2 && filterArsip) ||
+                  (filter.status === 3 && filterBelumdibaca))
+              ) {
+                return true;
+              }
+              return false;
+            })}
 
             renderItem={({item, index}) => (
               <Pressable

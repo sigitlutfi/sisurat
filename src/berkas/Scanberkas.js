@@ -72,7 +72,7 @@ export default function Scanberkas({route, navigation}) {
     //Linking.openURL(e.data).catch(err =>
     console.log(e);
   };
-  const [ticketCodes, setTicketCodes] = useState(['']); // State untuk kode tiket
+  const [ticketCodes, setTicketCodes] = useState([null]); // State untuk kode tiket
 
   const handleTicketCodeChange = (text, index) => {
     const newCodes = [...ticketCodes];
@@ -93,6 +93,7 @@ export default function Scanberkas({route, navigation}) {
           text: 'Ya',
           onPress: () => {
             console.log('Sending ticket codes:', ticketCodes);
+            scancode();
           },
         },
       ],
@@ -100,11 +101,29 @@ export default function Scanberkas({route, navigation}) {
     );
   };
 
+  function scancode() {
+    axios({method:'get', url:'http://103.100.27.59/~lacaksurat/scan_surat.php',
+    headers:{
+      'tiket_id' : ticketCodes
+    }
+  }).then(v=>{
+    console.log(v);
+    if (v.data.code==200) {
+      navigation.replace('Detailberkas',{item:v.data.data})
+    }else {
+      Alert.alert('gagal');
+    }
+  }).catch(e=>{
+    console.log(e);
+    Alert.alert('gagal');
+  })
+  }
+
   return (
     <NativeBaseProvider>
       <Box bg={'gray.200'} flex={1} px={4} pb={4}>
         <QRCodeScanner
-          onRead={v => console.log(v)}
+          onRead={v => setTicketCodes(v.data)}
           flashMode={RNCamera.Constants.FlashMode.torch}
           topContent={
             <VStack justifyContent="center">
